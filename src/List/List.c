@@ -1,6 +1,6 @@
 #include "List.h"
 
-Node *createNode(int row, int col, bool state, bool pathing)
+Node *createNode(int row, int col, char *state, bool pathing)	
 {
 	Node *newNode = malloc(sizeof(Node));	
 
@@ -16,6 +16,8 @@ Node *createNode(int row, int col, bool state, bool pathing)
 	newNode->previous = NULL;
 
 	newNode->neighbors = malloc(sizeof(Node*) * pathing ? Across : Diagonal);
+
+	return newNode;
 }
 
 void getNeighbors(int height, int width, Node Board[height][width], Node *node, bool pathing)

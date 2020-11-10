@@ -35,5 +35,5 @@ typedef struct List
 }
 List;
 
-Node *createNode(int row, int col, bool state, bool pathing);
-void getNeighbors(int height, int width, Node Board[height][width], Node node, bool pathing);
+Node *createNode(int row, int col, char *state, bool pathing);
+void getNeighbors(int height, int width, Node Board[height][width], Node *node, bool pathing);
