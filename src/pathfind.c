@@ -65,7 +65,7 @@ bool verifyBoard(char *path)
 	return true;
 }
 
-void readBoard(char *path, int height, int width, Node *board[height][width], bool pathing)
+void readBoard(char *path, int height, int width, Node *board[height][width], Node **start, Node **goal, bool pathing)
 {	
 	FILE *infile = fopen(path, "r");
 	char row[MAX_WIDTH];
@@ -76,6 +76,14 @@ void readBoard(char *path, int height, int width, Node *board[height][width], bo
 		for (int j = 0; j < width; j++)
 		{
 			board[i][j] = createNode(i, j, tolower(row[j]), pathing);
+			if (tolower(row[j]) == START)
+			{
+				*start = board[i][j];
+			}
+			if (tolower(row[j]) == END)
+			{
+				*goal = board[i][j];
+			}
 		}
 	}
 
@@ -114,11 +122,53 @@ void printBoard(int height, int width, Node *board[height][width])
 
 }
 
-int heuristic(struct Node start, struct Node goal)
+int heuristic(Node *start, Node *goal)
 {
-	int y1 = start.row, x1 = start.column;
-	int y2 = goal.row, x2 = goal.column;
+	int y1 = start->row, x1 = start->column;
+	int y2 = goal->row, x2 = goal->column;
 	
 	// Euclidean distance of 2 Nodes
 	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
+
+void setNeighbors(int height, int width, Node *board[height][width], bool pathing)
+{
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			getNeighbors(height, width, board, board[i][j], pathing);
+		}
+	}
+}
+
+int getLowestFScore(List *openset)
+{
+	if (!openset)
+		return 0;
+
+	lowest = 0;
+	while (openset)
+	{
+
+	}
+
+	return lowest;
+}
+
+bool findPath(int height, int width, Node *board[height][width], List **path, Node *start, Node *goal)
+{
+	List *openset = NULL, *closedSet = NULL;
+
+	// Initially add the start node to the openset
+	append(&openset, start);
+	start.f = heuristic(startr, goal);
+
+	while (listLength(&openset))
+	{
+
+	}
+
+	return false;
+}
+

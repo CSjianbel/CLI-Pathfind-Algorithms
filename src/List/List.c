@@ -62,7 +62,6 @@ void append(List **head, Node *node)
 	else 
 	{
 		List *tmp = *head;
-
 		while (tmp->next)
 			tmp = tmp->next;
 
@@ -97,3 +96,18 @@ void freeList(List *head)
 	}
 }
 
+int listLength(List **head)
+{
+	if (!*head)
+		return 0;
+
+	int counter = 1;
+
+	List *tmp = *head;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		counter++;
+	}	
+	return counter;
+}

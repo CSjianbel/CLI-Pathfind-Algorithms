@@ -54,9 +54,20 @@ int main(int argc, char **argv)
 
 	// Create a 2d array of given dimensions
 	Node *board[height][width];
+	Node *start, *goal;
 
 	// Read the board into the array
-	readBoard(filepath, height, width, board, pathing);
+	readBoard(filepath, height, width, board, &start, &goal, pathing);
 	printBoard(height, width, board);
 
+	List *path = NULL;
+
+	if (!findPath(height, width, board, &path))
+	{
+		printf("\nNo Solution Found!\n")
+	}
+	else
+	{
+		printBoard(height, width, board);
+	}
 }
