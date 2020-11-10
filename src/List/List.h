@@ -16,6 +16,8 @@ typedef struct Node
 	bool start;
 	bool end;
 
+	bool path;
+
 	int hScore;
 	int gScore;
 	int fScore;
@@ -29,23 +31,24 @@ Node;
 typedef struct List
 {
 
-	struct Node node;
+	struct Node *node;
 	struct List *next;
 
 }
 List;
 
-Node *createNode(int row, int col, char *state, bool pathing);
+Node *createNode(int row, int col, char state, bool pathing);
 void getNeighbors(int height, int width, Node Board[height][width], Node *node, bool pathing);
 
 /*
  * List Methods:
- *		Append, Search, Remove, Reverse
+ *		Append, Search, Remove, Reverse, Free list
  */
-
 void append(List **head, Node *node);
 bool search(List *head, Node *node);
 void reverseList(List **head);
+void freeList(List *head);
+
 
 
 

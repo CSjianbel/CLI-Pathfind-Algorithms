@@ -2,36 +2,61 @@
 
 int main(int argc, char **argv)
 {
-	if (argc != 2)
+	if (argc < 2 || argc > 3)
 	{
-		printf("Usage: pathfind [struture.txt]\n");
+		printf("Usage: pathfind [-d, -a] [struture.txt]\n");
 		return 1;
+	}
+	
+	bool pathing = true;
+	char *filepath = argv[1];
+
+	if (argc == 3)
+	{
+		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
+		{	
+			printf("Usage: pathfind [-d, -a] [struture.txt]\n");
+			return 1;
+		}
+
+		if (!strcmp("-d", argv[1]))
+		{
+			pathing = true;
+		}
+		else 
+		{
+			pathing = false;
+		}
+		filepath = argv[2];
+	}
+
+	FILE *test = fopen(filepath, "r");
+	if (!test)
+	{	
+		printf("Invalid structure filepath!\n\n");
+		printf("Usage: pathfind [-d, -a] [struture.txt]\n");
+		return 2;
 	}
 
 	int width = 0, height = 0;
 
 	// Get the dimension of the given board
-	int res = getDimension(argv[1], &height, &width);
+	int res = getDimension(filepath, &height, &width);
 
 	printf("Height: %d - Width: %d - Res: %d\n", height, width, res);
 
 	if (!res)
 	{
-		printf("Invalid Board!\n");
-		return 2;
+		printf("Invalid Board!\n\n");
+		printf("Usage: pathfind [-d, -a] [struture.txt]\n");
+		return 3;
 	}
 
 	// Create a 2d array of given dimensions
-	char board[height][width];
+	Node *board[height][width];
 
 	// Read the board into the array
-	readBoard(argv[1], height, width, board);
+	readBoard(filepath, height, width, board, pathing);
 	printBoard(height, width, board);
-
-	/* test createNode() 
-	Node *node = createNode(1, 1, "wall", true);
-
-	printf("row: %d - col: %d start: %d end: %d wall: %d scores: %d %d %d \n", node->row, node->column, node->start, node->end, node->wall, node->hScore, node->gScore, node->fScore);
-	*/
 
 }

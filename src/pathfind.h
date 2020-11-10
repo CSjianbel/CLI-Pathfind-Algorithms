@@ -16,6 +16,6 @@
 
 bool getDimension(char *path, int *height, int *width);
 bool verifyBoard(char *path);
-void readBoard(char *path, int height, int width, char board[height][width]);
-void printBoard(int height, int width, char board[height][width]);
+void readBoard(char *path, int height, int width, Node *board[height][width], bool pathing);
+void printBoard(int height, int width, Node *board[height][width]);
 int heuristic(Node start, Node goal);

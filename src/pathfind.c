@@ -57,7 +57,7 @@ bool verifyBoard(char *path)
 		}
 	}
 
-	fclose(infile);
+	fclose(infile);				
 	// If there are more than 1 START or END characters in the board then it is invalid
 	if (e != 1 || s != 1)
 		return false;
@@ -65,7 +65,7 @@ bool verifyBoard(char *path)
 	return true;
 }
 
-void readBoard(char *path, int height, int width, char board[height][width])
+void readBoard(char *path, int height, int width, Node *board[height][width], bool pathing)
 {	
 	FILE *infile = fopen(path, "r");
 	char row[MAX_WIDTH];
@@ -75,20 +75,39 @@ void readBoard(char *path, int height, int width, char board[height][width])
 		fscanf(infile, "%s", row);
 		for (int j = 0; j < width; j++)
 		{
-			board[i][j] = row[j];
+			board[i][j] = createNode(i, j, tolower(row[j]), pathing);
 		}
 	}
 
 	fclose(infile);
 }
 
-void printBoard(int height, int width, char board[height][width])
+void printBoard(int height, int width, Node *board[height][width])
 {
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
-			printf("%c", board[i][j]);
+			if (board[i][j]->path)
+			{
+				printf("*");
+			}
+			else if (board[i][j]->wall)
+			{
+				printf("#");
+			}
+			else if (board[i][j]->start)
+			{
+				printf("S");
+			}
+			else if (board[i][j]->end)
+			{
+				printf("E");
+			}
+			else
+			{
+				printf("_");
+			}
 		}
 		printf("\n");
 	}
