@@ -128,7 +128,7 @@ void printBoard(int height, int width, char board[height][width])
 int heuristic(struct Node start, struct Node goal)
 {
 	int y1 = start.row, x1 = start.column;
-	int y2 = goal.row, y1 = goal.column;
+	int y2 = goal.row, x2 = goal.column;
 	
 	// Euclidean distance of 2 Nodes
 	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));

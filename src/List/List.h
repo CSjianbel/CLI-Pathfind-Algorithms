@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-struct Node
+typedef struct Node
 {
 	
 	int row;
@@ -15,14 +15,16 @@ struct Node
 	int fScore;
 
 	struct Node *previous;
-	struct Node neighbors[8];
+	struct Node *neighbors;
 
-};
+}
+Node;
 
-struct List
+typedef struct List
 {
 
 	struct Node node;
 	struct List *next;
 
-};
+}
+List;
