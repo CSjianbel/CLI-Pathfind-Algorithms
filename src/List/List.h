@@ -37,3 +37,15 @@ List;
 
 Node *createNode(int row, int col, char *state, bool pathing);
 void getNeighbors(int height, int width, Node Board[height][width], Node *node, bool pathing);
+
+/*
+ * List Methods:
+ *		Append, Search, Remove, Reverse
+ */
+
+void append(List **head, Node *node);
+bool search(List *head, Node *node);
+void reverseList(List **head);
+
+
+

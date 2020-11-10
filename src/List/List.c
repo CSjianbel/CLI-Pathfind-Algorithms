@@ -7,9 +7,9 @@ Node *createNode(int row, int col, char *state, bool pathing)
 	newNode->row = row;
 	newNode->column = col;
 
-	newNode->wall = strcmp(state, "wall") ? true : false;
-	newNode->start = strcmp(state, "start") ? true : false;
-	newNode->end = strcmp(state, "end") ? true : false;
+	newNode->wall = !strcmp(state, "wall") ? true : false;
+	newNode->start = !strcmp(state, "start") ? true : false;
+	newNode->end = !strcmp(state, "end") ? true : false;
 
 	newNode->hScore = newNode->gScore = newNode->fScore = 0;
 
@@ -47,3 +47,42 @@ void getNeighbors(int height, int width, Node Board[height][width], Node *node, 
 		}
 	}
 }
+
+void append(List **head, Node *node)
+{
+	List *n = malloc(sizeof(List));
+	n->node = node;
+	n->next = NULL;
+
+	if (!*head)
+	{
+		*head = n;
+	}
+	else 
+	{
+		List *tmp = *head;
+
+		while (tmp->next)
+			tmp = tmp->next;
+
+		tmp->next = n;
+	}
+}
+
+bool search(List *head, Node *node)
+{
+	while (head)
+	{
+		if (head->node == node)
+			return true;
+
+		head = head->next;
+	}
+	return false;
+}
+
+void reverseList(List **head)
+{
+	
+}
+

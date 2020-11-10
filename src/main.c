@@ -28,4 +28,10 @@ int main(int argc, char **argv)
 	readBoard(argv[1], height, width, board);
 	printBoard(height, width, board);
 
+	/* test createNode() 
+	Node *node = createNode(1, 1, "wall", true);
+
+	printf("row: %d - col: %d start: %d end: %d wall: %d scores: %d %d %d \n", node->row, node->column, node->start, node->end, node->wall, node->hScore, node->gScore, node->fScore);
+	*/
+
 }
