@@ -1,4 +1,10 @@
+#include <stdlib.h>
 #include <stdbool.h>
+
+#include <string.h>
+
+#define Across 4
+#define Diagonal 8
 
 typedef struct Node
 {
@@ -28,3 +34,6 @@ typedef struct List
 
 }
 List;
+
+Node *createNode(int row, int col, bool state, bool pathing);
+void getNeighbors(int height, int width, Node Board[height][width], Node node, bool pathing);

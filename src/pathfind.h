@@ -14,9 +14,6 @@
 #define END 'e'
 #define PATH '*'
 
-#define Across 4
-#define Diagonal 8
-
 bool getDimension(char *path, int *height, int *width);
 bool verifyBoard(char *path);
 void readBoard(char *path, int height, int width, char board[height][width]);
