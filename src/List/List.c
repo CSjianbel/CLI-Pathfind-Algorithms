@@ -96,17 +96,13 @@ void freeList(List *head)
 	}
 }
 
-int listLength(List **head)
+int listLength(List *head)
 {
-	if (!*head)
-		return 0;
+	int counter = 0;
 
-	int counter = 1;
-
-	List *tmp = *head;
-	while (tmp)
+	while (head)
 	{
-		tmp = tmp->next;
+		head = head->next;
 		counter++;
 	}	
 	return counter;

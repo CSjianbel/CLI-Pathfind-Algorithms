@@ -150,7 +150,7 @@ int getLowestFScore(List *openset)
 	lowest = 0;
 	while (openset)
 	{
-
+		
 	}
 
 	return lowest;
@@ -162,7 +162,7 @@ bool findPath(int height, int width, Node *board[height][width], List **path, No
 
 	// Initially add the start node to the openset
 	append(&openset, start);
-	start.f = heuristic(startr, goal);
+	start->f = heuristic(startr, goal);
 
 	while (listLength(&openset))
 	{
