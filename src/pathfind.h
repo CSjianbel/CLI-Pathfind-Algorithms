@@ -20,5 +20,8 @@ void readBoard(char *path, int height, int width, Node *board[height][width], No
 void printBoard(int height, int width, Node *board[height][width]);
 int heuristic(Node *start, Node *goal);
 void setNeighbors(int height, int width, Node *board[height][width], bool pathing);
-bool findPath(int height, int width, Node *board[height][width], List **path, Node *start, Node *goal);
-Node *getLowestFScore(List *openset);
+void printNeighbors(int height, int width, Node *board[height][width]);
+bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing);
+int getLowestFScore(List *openset);
+List *getNode(List *head, int index);
+

@@ -16,11 +16,12 @@ Node *createNode(int row, int col, char state, bool pathing)
 
 	newNode->previous = NULL;
 
-	newNode->neighbors = malloc(sizeof(Node*) * pathing ? Diagonal : Across);
+	newNode->neighbors = calloc(pathing ? Diagonal : Across, sizeof(Node*));
 
 	return newNode;
 }
 
+// BUGGED!!!!!!!!!
 void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing)
 {
 	int index = 0;
@@ -31,7 +32,7 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
 			for (int j = -1; j < 2; j++)
 			{
 				int oX = node->column + i, oY = node->row + j;
-				if (oX > 0 && oX < width && oY > 0 && oY < height) 
+				if (oX > 0 && oX < width && oY > 0 && oY < height && !Board[oY][oX]->wall && oY != node->row && oX != node->column) 
 				{
 					node->neighbors[index++] = Board[oY][oX];
 				}
@@ -42,10 +43,10 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
 	{
 		for (int i = -1; i < 2; i++)
 		{
-			if (node->row + i > 0 && node->row + i < height)
-				node->neighbors[index++] = Board[node->row + 1][node->column];
+			if (node->row + i > 0 && node->row + i < height && !Board[node->row + i][node->column]->wall && node->row + i != node->row)
+				node->neighbors[index++] = Board[node->row + i][node->column];
 
-			if (node->column + i > 0 && node->column + i < width)
+			if (node->column + i > 0 && node->column + i < width && !Board[node->row][node->column + i]->wall && node->column + i != node->column)
 				node->neighbors[index++] = Board[node->row][node->column + i];
 		}
 	}
@@ -83,11 +84,6 @@ bool search(List *head, Node *node)
 	return false;
 }
 
-void reverseList(List **head)
-{
-
-}
-
 void freeList(List *head)
 {
 	while (head)
@@ -110,9 +106,9 @@ int listLength(List *head)
 	return counter;
 }
 
-List *remove(List **head, int index)
+List *removeNode(List **head, int index)
 {
-	Node *cursor = *head;
+	List *cursor = *head;
 	if (index < 0 || index >= listLength(*head))
 	{
 		return NULL;
@@ -126,7 +122,7 @@ List *remove(List **head, int index)
 	{
 		while (1)
 		{
-			Node *tmp = cursor;
+			List *tmp = cursor;
 			cursor = cursor->next;
 			if (!--index)
 			{
@@ -139,8 +135,8 @@ List *remove(List **head, int index)
 	return cursor;
 }
 
-void destroy(List *Node)
+void destroy(List *node)
 {
-	free(Node);
+	free(node);
 }
 

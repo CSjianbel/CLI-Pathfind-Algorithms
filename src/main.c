@@ -61,13 +61,14 @@ int main(int argc, char **argv)
 	readBoard(filepath, height, width, board, &start, &goal, pathing);
 	printBoard(height, width, board);
 
-	List *path = NULL;                   
-	// if (!findPath(height, width, board, &path))
-	// {
-	// 	printf("\nNo Solution Found!\n")
-	// }
-	// else
-	// {
-	// 	printBoard(height, width, board);
-	// }
+	if (findPath(height, width, board, start, goal, pathing))
+	{
+		printf("\n**********Solution Found!**********\n\n");
+		printBoard(height, width, board);
+	}
+	else
+	{
+		printf("\n**********No Solution Found!**********\n\n");
+		printBoard(height, width, board);
+	}
 }

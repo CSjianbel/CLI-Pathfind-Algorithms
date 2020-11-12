@@ -18,9 +18,9 @@ typedef struct Node
 
 	bool path;
 
-	int hScore;
-	int gScore;
-	int fScore;
+	double hScore;
+	double gScore;
+	double fScore;
 
 	struct Node *previous;
 	struct Node **neighbors;
@@ -48,11 +48,10 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
  */
 void append(List **head, Node *node);
 bool search(List *head, Node *node);
-void reverseList(List **head);
 void freeList(List *head);
 int listLength(List *head);
-List *remove(List **head, int index);
-void destroy(List *Node);
+List *removeNode(List **head, int index);
+void destroy(List *node);
 
 
 

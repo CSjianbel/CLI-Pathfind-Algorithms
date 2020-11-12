@@ -137,28 +137,11 @@ void setNeighbors(int height, int width, Node *board[height][width], bool pathin
 	{
 		for (int j = 0; j < width; j++)
 		{
-			getNeighbors(height, width, board, board[i][j], pathing);
+			if (!board[i][j]->wall)
+				getNeighbors(height, width, board, board[i][j], pathing);
 		}
 	}
 }
-
-/*
-Node *getLowestFScore(List *openset)
-{
-
-	Node *tmp = openset->node;
-
-	openset = openset->next;
-
-	while (openset)
-	{	
-		if (openset->node->fScore < tmp->fScore)
-			tmp = openset->node;
-	}
-
-	return tmp;
-}
-*/
 
 int getLowestFScore(List *openset)
 {
@@ -189,19 +172,119 @@ int getLowestFScore(List *openset)
 	return lowest;
 }
 
-
-bool findPath(int height, int width, Node *board[height][width], List **path, Node *start, Node *goal)
+List *getNode(List *head, int index)
 {
-	// List *openset = NULL, *closedSet = NULL;
+	while (index)
+	{
+		head = head->next;
+		index--;
+	}
 
-	// // Initially add the start node to the openset
-	// append(&openset, start);
-	// start->fScore = heuristic(start, goal);
+	return head;
 
-	// while (listLength(openset))
-	// {
+}
 
-	// }
+void printNeighbors(int height, int width, Node *board[height][width])
+{
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			int counter = 0;
+			for (int y = 0; board[i][j]->neighbors[y]; y++)
+			{
+				counter ++;
+			}
+
+			if (counter)
+				printf("%d ", counter);
+			else
+				printf("# ");
+		
+		}
+		printf("\n");
+	}
+}
+
+
+bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
+{
+	// Set neighbors of Nodes
+	setNeighbors(height, width, board, pathing);
+
+	// print neighbor counts
+	printNeighbors(height, width, board);
+	printf("\n\n");
+
+	List *openset = NULL, *closedSet = NULL;
+
+	// Initially add the start node to the openset
+	append(&openset, start);
+	start->fScore = heuristic(start, goal);
+
+	while (listLength(openset))
+	{
+		int lowestFindex = getLowestFScore(openset);
+		List *current = getNode(openset, lowestFindex);
+
+		if (current->node == goal)
+		{
+			// If the solution has been found
+			Node *tmp = current->node;
+			tmp->path = true;
+
+			while (tmp->previous)
+			{
+				tmp = tmp->previous;
+				tmp->path = true;
+			}
+
+		
+			freeList(openset);
+			freeList(closedSet);
+			return true;
+		}
+
+		// Remove winner from openset and append to closedSet
+		List *removed = removeNode(&openset, lowestFindex);
+		append(&closedSet, removed->node);
+
+		for (int i = 0; current->node->neighbors[i]; i++)
+		{
+			Node *neighbor = current->node->neighbors[i];
+
+			if (search(closedSet, neighbor))
+				continue;
+
+			double tGscore = neighbor->gScore + heuristic(current->node, neighbor);
+
+			bool newPath = false;
+			if (search(openset, neighbor))
+			{
+				if (tGscore < neighbor->gScore)
+				{
+					neighbor->gScore = tGscore;
+					newPath = true;
+				}
+				else
+				{
+					neighbor->gScore = tGscore;
+					append(&openset,neighbor);
+					newPath = true;
+				}
+
+				if (newPath)
+				{
+					neighbor->previous = current->node;
+					neighbor->hScore = heuristic(neighbor, goal);
+					neighbor->fScore = neighbor->gScore + neighbor->hScore; 
+				}
+			}
+		}
+	}
+
+	freeList(openset);
+	freeList(closedSet);
 
 	return false;
 }
