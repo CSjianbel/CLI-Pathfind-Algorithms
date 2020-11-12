@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 	int res = getDimension(filepath, &height, &width);
 
 	printf("Height: %d - Width: %d - Res: %d\n", height, width, res);
+	printf("Pathing: %s\n\n", pathing ? "Diagonal" : "Across");
 
 	if (!res)
 	{
@@ -60,14 +61,13 @@ int main(int argc, char **argv)
 	readBoard(filepath, height, width, board, &start, &goal, pathing);
 	printBoard(height, width, board);
 
-	List *path = NULL;
-
-	if (!findPath(height, width, board, &path))
-	{
-		printf("\nNo Solution Found!\n")
-	}
-	else
-	{
-		printBoard(height, width, board);
-	}
+	List *path = NULL;                   
+	// if (!findPath(height, width, board, &path))
+	// {
+	// 	printf("\nNo Solution Found!\n")
+	// }
+	// else
+	// {
+	// 	printBoard(height, width, board);
+	// }
 }

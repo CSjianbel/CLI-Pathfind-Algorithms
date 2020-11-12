@@ -142,32 +142,66 @@ void setNeighbors(int height, int width, Node *board[height][width], bool pathin
 	}
 }
 
+/*
+Node *getLowestFScore(List *openset)
+{
+
+	Node *tmp = openset->node;
+
+	openset = openset->next;
+
+	while (openset)
+	{	
+		if (openset->node->fScore < tmp->fScore)
+			tmp = openset->node;
+	}
+
+	return tmp;
+}
+*/
+
 int getLowestFScore(List *openset)
 {
+	// Returns -1 if the list is empty
 	if (!openset)
-		return 0;
+	{
+		return -1;
+	}
 
-	lowest = 0;
+	Node *cursor = openset->node;
+	int lowest = 0;
+	int index = 0;
+
+	openset = openset->next;
+
 	while (openset)
 	{
-		
+		index++;
+
+		if (openset->node->fScore < cursor->fScore)
+		{
+			cursor = openset->node;
+			lowest = index;
+		}
+		openset = openset->next;
 	}
 
 	return lowest;
 }
 
+
 bool findPath(int height, int width, Node *board[height][width], List **path, Node *start, Node *goal)
 {
-	List *openset = NULL, *closedSet = NULL;
+	// List *openset = NULL, *closedSet = NULL;
 
-	// Initially add the start node to the openset
-	append(&openset, start);
-	start->f = heuristic(startr, goal);
+	// // Initially add the start node to the openset
+	// append(&openset, start);
+	// start->fScore = heuristic(start, goal);
 
-	while (listLength(&openset))
-	{
+	// while (listLength(openset))
+	// {
 
-	}
+	// }
 
 	return false;
 }

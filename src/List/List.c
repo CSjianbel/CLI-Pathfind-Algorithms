@@ -21,7 +21,7 @@ Node *createNode(int row, int col, char state, bool pathing)
 	return newNode;
 }
 
-void getNeighbors(int height, int width, Node Board[height][width], Node *node, bool pathing)
+void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing)
 {
 	int index = 0;
 	if (pathing) 
@@ -31,8 +31,10 @@ void getNeighbors(int height, int width, Node Board[height][width], Node *node, 
 			for (int j = -1; j < 2; j++)
 			{
 				int oX = node->column + i, oY = node->row + j;
-				if (oX > 0 && oX < width && oY > 0 && oY < height)
+				if (oX > 0 && oX < width && oY > 0 && oY < height) 
+				{
 					node->neighbors[index++] = Board[oY][oX];
+				}
 			}
 		}
 	}
@@ -107,3 +109,38 @@ int listLength(List *head)
 	}	
 	return counter;
 }
+
+List *remove(List **head, int index)
+{
+	Node *cursor = *head;
+	if (index < 0 || index >= listLength(*head))
+	{
+		return NULL;
+	}
+	
+	if (!index)
+	{
+		*head = cursor->next;
+	}
+	else
+	{
+		while (1)
+		{
+			Node *tmp = cursor;
+			cursor = cursor->next;
+			if (!--index)
+			{
+				tmp->next = cursor->next;
+				break;
+			}
+		}
+	}
+
+	return cursor;
+}
+
+void destroy(List *Node)
+{
+	free(Node);
+}
+

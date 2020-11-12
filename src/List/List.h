@@ -23,7 +23,7 @@ typedef struct Node
 	int fScore;
 
 	struct Node *previous;
-	struct Node *neighbors;
+	struct Node **neighbors;
 
 }
 Node;
@@ -40,7 +40,7 @@ List;
 // Node Constructor
 Node *createNode(int row, int col, char state, bool pathing);
 // Sets the neighboring Nodes of a given Node
-void getNeighbors(int height, int width, Node Board[height][width], Node *node, bool pathing);
+void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing);
 
 /*
  * List Methods:
@@ -51,6 +51,8 @@ bool search(List *head, Node *node);
 void reverseList(List **head);
 void freeList(List *head);
 int listLength(List *head);
+List *remove(List **head, int index);
+void destroy(List *Node);
 
 
 
