@@ -6,7 +6,7 @@ Recreating the List Data Structure to utilize for the algorithms.<br />
 
 ## Clone
 ```bash
-	git clone "https://github.com/CSjianbel/CLI-A-Star-Algorithm.git"
+	git clone "https://github.com/CSjianbel/CLI-Pathfind-Algorithms.git"
 ```
 
 ## Build
@@ -80,7 +80,8 @@ Create a _.txt_ file and fill it with the following characters:<br />
 
 The Start Node and End Node Characters must only appear once in the board to be a valid board.<br />
 The Width of each row of the board must be symmetrical to be a valid board.<br />
-If there are characters present in the board that are not mentioned above then it will be an invalid board<br />
+If there are characters present in the board that are not mentioned above then it will be an invalid board.<br />
+The Max Width of the Board is set to be 50, anything above that is considered invalid. This can be changed in __src/pathfind.h__.<br />
 
 #### Sample Valid Board
 

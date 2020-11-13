@@ -21,7 +21,6 @@ Node *createNode(int row, int col, char state, bool pathing)
 	return newNode;
 }
 
-// BUGGED!!!!!!!!!
 void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing)
 {
 	int index = 0;

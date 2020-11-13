@@ -1,5 +1,41 @@
 #include "pathfind.h"
 
+bool verifyBoard(char *path)
+{
+	FILE *infile = fopen(path, "r");
+	char row[MAX_WIDTH];
+
+	// Counts the START and END characters given in the board
+	int e = 0, s = 0;
+
+	while (fscanf(infile, "%s", row) != EOF)
+	{
+		for (int i = 0; row[i]; i++)
+		{
+			char tmp = tolower(row[i]);
+			// if the board contains invalid characters
+			if (tmp != '#' && tmp != 's' && tmp != 'e' && tmp != '_')
+			{
+				fclose(infile);
+				return false;
+			}
+
+			if (tmp == 's')
+				s++;
+			
+			if (tmp == 'e')
+				e++;
+		}
+	}
+
+	fclose(infile);				
+	// If there are more than 1 START or END characters in the board then it is invalid
+	if (e != 1 || s != 1)
+		return false;
+
+	return true;
+}
+
 bool getDimension(char *path, int *height, int *width)
 {
 	FILE *infile = fopen(path, "r");
@@ -29,42 +65,6 @@ bool getDimension(char *path, int *height, int *width)
 	return true;
 }
 
-bool verifyBoard(char *path)
-{
-	FILE *infile = fopen(path, "r");
-	char row[MAX_WIDTH];
-
-	// Counts the START and END characters given in the board
-	int e = 0, s = 0;
-
-	while (fscanf(infile, "%s", row) != EOF)
-	{
-		for (int i = 0; row[i]; i++)
-		{
-			char tmp = tolower(row[i]);
-			// if the board contains invalid characters
-			if (tmp != WALL && tmp != START && tmp != END && tmp != OPEN)
-			{
-				fclose(infile);
-				return false;
-			}
-
-			if (tmp == START)
-				s++;
-			
-			if (tmp == END)
-				e++;
-		}
-	}
-
-	fclose(infile);				
-	// If there are more than 1 START or END characters in the board then it is invalid
-	if (e != 1 || s != 1)
-		return false;
-
-	return true;
-}
-
 void readBoard(char *path, int height, int width, Node *board[height][width], Node **start, Node **goal, bool pathing)
 {	
 	FILE *infile = fopen(path, "r");
@@ -76,11 +76,11 @@ void readBoard(char *path, int height, int width, Node *board[height][width], No
 		for (int j = 0; j < width; j++)
 		{
 			board[i][j] = createNode(i, j, tolower(row[j]), pathing);
-			if (tolower(row[j]) == START)
+			if (tolower(row[j]) == 's')
 			{
 				*start = board[i][j];
 			}
-			if (tolower(row[j]) == END)
+			if (tolower(row[j]) == 'e')
 			{
 				*goal = board[i][j];
 			}
@@ -110,7 +110,7 @@ void printBoard(int height, int width, Node *board[height][width])
 			}
 			else if (board[i][j]->wall)
 			{
-				printf("%c", 219);
+				printf("%c", WALL);
 			}
 			else
 			{
@@ -119,7 +119,6 @@ void printBoard(int height, int width, Node *board[height][width])
 		}
 		printf("\n");
 	}
-
 }
 
 double heuristic(Node *start, Node *goal)
@@ -185,35 +184,6 @@ List *getNode(List *head, int index)
 	}
 
 	return head;
-
-}
-
-bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, char algorithm, bool pathing)
-{
-	// Set neighbors of Nodes
-	setNeighbors(height, width, board, pathing);
-	printf("Finding path...\n\n");
-
-	if (algorithm == 'a')
-	{
-		if (AStar(height, width, board, start, goal, pathing))
-			return true;
-		return false;
-	}
-	else if (algorithm == 'd')
-	{
-		if (depthFirstSearch(height, width, board, start, goal, pathing))
-			return true;
-		return false;
-	}
-	else if (algorithm == 'b')
-	{
-		if (breadthFirstSearch(height, width, board, start, goal, pathing))
-			return true;
-		return false;
-	}
-
-	return false;
 }
 
 bool AStar(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
@@ -341,7 +311,6 @@ bool depthFirstSearch(int height, int width, Node *board[height][width], Node *s
 	freeList(stack);
 	freeList(explored);
 	return false;
-
 }
 
 bool breadthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
@@ -391,5 +360,33 @@ bool breadthFirstSearch(int height, int width, Node *board[height][width], Node 
 
 	freeList(queue);
 	freeList(explored);
+	return false;
+}
+
+bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, char algorithm, bool pathing)
+{
+	// Set neighbors of Nodes
+	setNeighbors(height, width, board, pathing);
+	printf("Finding path...\n\n");
+
+	if (algorithm == 'a')
+	{
+		if (AStar(height, width, board, start, goal, pathing))
+			return true;
+		return false;
+	}
+	else if (algorithm == 'd')
+	{
+		if (depthFirstSearch(height, width, board, start, goal, pathing))
+			return true;
+		return false;
+	}
+	else if (algorithm == 'b')
+	{
+		if (breadthFirstSearch(height, width, board, start, goal, pathing))
+			return true;
+		return false;
+	}
+
 	return false;
 }

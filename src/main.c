@@ -77,6 +77,7 @@ int main(int argc, char **argv)
 		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 		return 2;
 	}
+	fclose(test);
 
 	int width = 0, height = 0;
 
