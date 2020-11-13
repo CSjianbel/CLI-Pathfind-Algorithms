@@ -1,7 +1,8 @@
-# CLI A* Pathfinding Algorithm
+# CLI Pathfinding Algorithms
  
-Command Line Program version of the A* pathfinding Algorithm written in C<br />
-Recreating the List Data Structure to utilize for the algorithm.<br /> 
+Command Line Program implementation of different Search algorithms in C.<br />
+Namely A*, Depth First Search and lastly Breadth First Search.<br />
+Recreating the List Data Structure to utilize for the algorithms.<br /> 
 
 ## Clone
 ```bash
@@ -25,19 +26,46 @@ Windows:
 
 ## Usage
 ```bash
-	./pathfind [-d, -a] [structure.txt]
+	./pathfind [Pathing] [Algorithm] [Board]
+
+	./pathfind [-a, -d] [-a, -d, -b] [structure.txt]
+
+	./pathfind -a -d src/Boards/test1.txt
+
+	./pathfind -d src/Boards/test2.txt
+
+	./pathfind src/Boards/test3.txt
 ```
 
-* _-d_ Sets Pathing to Across & Diagonal
-* _-a_ Sets Pathing to Across Only
-* _structure.txt_ must be a path to a board
+* Pathing
 
-By default the program utilizes across and diagonal if the 2nd command line argument is ommitted
+	* _-a_ Sets Pathing to Across Only
+	* _-d_ Sets Pathing to Across & Diagonal
+
+* Algorithm
+
+	* _-a_ Sets A* Search as the algorithm to be used
+	* _-d_ Sets Depth First Search as the algorithm to be used
+	* _-b_ Sets Breadth First search as the algorithm to be used
+
+* Board
+	
+	* _structure.txt_ must be a path to a board
+
+* Defaults
+	
+	* The program is set to across and diagonal if the 2nd & 3rd command line argument is ommitted.
+	* The program is set to A* search if the 3rd command line argument is ommitted.
+
+* Notes
+
+	* The Board is the only command line argument that is required when running the program. 
+	* To be able to set the algorithm then all 4 command line arguments must be provided.  
 
 ## Creating a board
 
 Inside the __src/Boards/__ directory there exists test boards that may be utilized for testing.<br />
-Inside the __src/Boards/Invalid__ directory exists test boards that are deemed to be invalid by the program.<br />
+Inside the __src/Boards/Invalid__ directory there exists test boards that are deemed to be invalid by the program.<br />
 
 Here are a few guidelines in Creating a Board of your own...<br />
 

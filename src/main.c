@@ -4,7 +4,7 @@ int main(int argc, char **argv)
 {
 	if (argc < 2 || argc > 4)
 	{
-		printf("Usage: pathfind [-d, -a] [-a, -d, -b] [struture.txt]\n");
+		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 		return 1;
 	}
 	
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 	{
 		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
 		{	
-			printf("Usage: pathfind [-d, -a] [-a, -d, -b] [struture.txt]\n");
+			printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 			return 1;
 		}
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 
 		if (strcmp(argv[2], "-a") && strcmp(argv[2], "-d") && strcmp(argv[2], "-b"))
 		{
-			printf("Usage: pathfind [-d, -a] [-a, -d, -b] [struture.txt]\n");
+			printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 			return 1;
 		}
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	{
 		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
 		{	
-			printf("Usage: pathfind [-d, -a] [-a, -d, -b] [struture.txt]\n");
+			printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 			return 1;
 		}
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 	if (!test)
 	{	
 		printf("Invalid structure filepath!\n\n");
-		printf("Usage: pathfind [-d, -a] [-a, -d, -b] [struture.txt]\n");
+		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 		return 2;
 	}
 
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 	if (!getDimension(filepath, &height, &width))
 	{
 		printf("Invalid Board!\n\n");
-		printf("Usage: pathfind [-d, -a] [-a, -d, -b] [struture.txt]\n");
+		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
 		return 3;
 	}
 
