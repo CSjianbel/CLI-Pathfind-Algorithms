@@ -96,21 +96,21 @@ void printBoard(int height, int width, Node *board[height][width])
 	{
 		for (int j = 0; j < width; j++)
 		{
-			if (board[i][j]->path)
-			{
-				printf("*");
-			}
-			else if (board[i][j]->wall)
-			{
-				printf("#");
-			}
-			else if (board[i][j]->start)
+			if (board[i][j]->start)
 			{
 				printf("S");
 			}
 			else if (board[i][j]->end)
 			{
 				printf("E");
+			}
+			else if (board[i][j]->path)
+			{
+				printf("X");
+			}
+			else if (board[i][j]->wall)
+			{
+				printf("#");
 			}
 			else
 			{
@@ -190,67 +190,6 @@ List *getNode(List *head, int index)
 	return head;
 
 }
-
-/*
-void printNeighbors(int height, int width, Node *board[height][width])
-{
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			if (board[i][j]->wall)
-				continue;
-
-			printf("(%d, %d) - ", i, j);
-			for (int y = 0; board[i][j]->neighbors[y]; y++)
-			{
-				printf("[%d - %d] ", board[i][j]->neighbors[y]->row, board[i][j]->neighbors[y]->column);
-				if (board[i][j]->neighbors[y + 1])
-				{
-					printf(", ");
-				}
-			} 
-			printf("\n");
-		}
-	}
-
-	printf("\n\n");
-
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			int counter = 0;
-			for (int y = 0; board[i][j]->neighbors[y]; y++)
-			{
-				counter ++;
-			}
-
-			if (counter)
-				printf("%d ", counter);
-			else
-				printf("# ");
-		
-		}
-		printf("\n");
-	}
-}
-
-void printSets(List *list)
-{
-	printf("[");
-	while (list)
-	{
-		printf("(%p, %d, %d)", list, list->node->row, list->node->column);
-		list = list->next;
-
-		if (list)
-			printf(", ");
-	}
-	printf("]\n");
-}
-*/
-
 
 bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
 {
