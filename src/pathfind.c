@@ -116,19 +116,20 @@ void printBoard(int height, int width, Node *board[height][width])
 			{
 				printf("_");
 			}
+			printf(" ");
 		}
 		printf("\n");
 	}
 
 }
 
-int heuristic(Node *start, Node *goal)
+double heuristic(Node *start, Node *goal)
 {
 	int y1 = start->row, x1 = start->column;
 	int y2 = goal->row, x2 = goal->column;
 	
 	// Euclidean distance of 2 Nodes
-	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	return sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2));
 }
 
 void setNeighbors(int height, int width, Node *board[height][width], bool pathing)
@@ -174,6 +175,12 @@ int getLowestFScore(List *openset)
 
 List *getNode(List *head, int index)
 {
+	// If the index is invalid for the given linked list
+	if (index < 0 && index >= listLength(head))
+	{
+		return NULL;
+	}
+
 	while (index)
 	{
 		head = head->next;
@@ -184,8 +191,31 @@ List *getNode(List *head, int index)
 
 }
 
+/*
 void printNeighbors(int height, int width, Node *board[height][width])
 {
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			if (board[i][j]->wall)
+				continue;
+
+			printf("(%d, %d) - ", i, j);
+			for (int y = 0; board[i][j]->neighbors[y]; y++)
+			{
+				printf("[%d - %d] ", board[i][j]->neighbors[y]->row, board[i][j]->neighbors[y]->column);
+				if (board[i][j]->neighbors[y + 1])
+				{
+					printf(", ");
+				}
+			} 
+			printf("\n");
+		}
+	}
+
+	printf("\n\n");
+
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
@@ -206,26 +236,40 @@ void printNeighbors(int height, int width, Node *board[height][width])
 	}
 }
 
+void printSets(List *list)
+{
+	printf("[");
+	while (list)
+	{
+		printf("(%p, %d, %d)", list, list->node->row, list->node->column);
+		list = list->next;
+
+		if (list)
+			printf(", ");
+	}
+	printf("]\n");
+}
+*/
+
 
 bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
 {
 	// Set neighbors of Nodes
 	setNeighbors(height, width, board, pathing);
 
-	// print neighbor counts
-	printNeighbors(height, width, board);
-	printf("\n\n");
-
-	List *openset = NULL, *closedSet = NULL;
+	List *openSet = NULL, *closedSet = NULL;
 
 	// Initially add the start node to the openset
-	append(&openset, start);
+	append(&openSet, start);
 	start->fScore = heuristic(start, goal);
 
-	while (listLength(openset))
+	// Finding Path
+	printf("Finding path...\n\n");
+
+	while (listLength(openSet))
 	{
-		int lowestFindex = getLowestFScore(openset);
-		List *current = getNode(openset, lowestFindex);
+		int lowestFindex = getLowestFScore(openSet);
+		List *current = getNode(openSet, lowestFindex);
 
 		if (current->node == goal)
 		{
@@ -239,14 +283,13 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 				tmp->path = true;
 			}
 
-		
-			freeList(openset);
+			freeList(openSet);
 			freeList(closedSet);
 			return true;
 		}
 
 		// Remove winner from openset and append to closedSet
-		List *removed = removeNode(&openset, lowestFindex);
+		List *removed = removeNode(&openSet, lowestFindex);
 		append(&closedSet, removed->node);
 
 		for (int i = 0; current->node->neighbors[i]; i++)
@@ -259,33 +302,32 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 			double tGscore = neighbor->gScore + heuristic(current->node, neighbor);
 
 			bool newPath = false;
-			if (search(openset, neighbor))
+			if (search(openSet, neighbor))
 			{
 				if (tGscore < neighbor->gScore)
 				{
 					neighbor->gScore = tGscore;
 					newPath = true;
 				}
-				else
-				{
-					neighbor->gScore = tGscore;
-					append(&openset,neighbor);
-					newPath = true;
-				}
+			}
+			else
+			{
+				neighbor->gScore = tGscore;
+				append(&openSet, neighbor);
+				newPath = true;
+			}
 
-				if (newPath)
-				{
-					neighbor->previous = current->node;
-					neighbor->hScore = heuristic(neighbor, goal);
-					neighbor->fScore = neighbor->gScore + neighbor->hScore; 
-				}
+			if (newPath)
+			{
+				neighbor->previous = current->node;
+				neighbor->hScore = heuristic(neighbor, goal);
+				neighbor->fScore = neighbor->gScore + neighbor->hScore; 
 			}
 		}
 	}
 
-	freeList(openset);
+	freeList(openSet);
 	freeList(closedSet);
-
 	return false;
 }
 

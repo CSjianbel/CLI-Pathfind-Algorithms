@@ -60,15 +60,16 @@ int main(int argc, char **argv)
 	// Read the board into the array
 	readBoard(filepath, height, width, board, &start, &goal, pathing);
 	printBoard(height, width, board);
+	printf("\n\n");
 
 	if (findPath(height, width, board, start, goal, pathing))
 	{
-		printf("\n**********Solution Found!**********\n\n");
+		printf("**********Solution Found!**********\n\n");
 		printBoard(height, width, board);
 	}
 	else
 	{
-		printf("\n**********No Solution Found!**********\n\n");
+		printf("**********No Solution Found!**********\n\n");
 		printBoard(height, width, board);
 	}
 }

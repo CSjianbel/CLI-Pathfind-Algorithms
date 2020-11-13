@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdbool.h>
-
 #include <string.h>
 
 #define Across 4
@@ -44,7 +43,7 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
 
 /*
  * List Methods:
- *		Append, Search, Remove, Reverse, Free list
+ *		Append, Search, Remove, Free list
  */
 void append(List **head, Node *node);
 bool search(List *head, Node *node);

@@ -31,8 +31,11 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
 		{
 			for (int j = -1; j < 2; j++)
 			{
+				if (!i && !j)
+					continue;
+
 				int oX = node->column + i, oY = node->row + j;
-				if (oX > 0 && oX < width && oY > 0 && oY < height && !Board[oY][oX]->wall && oY != node->row && oX != node->column) 
+				if (oX >= 0 && oX < width && oY >= 0 && oY < height && !Board[oY][oX]->wall) 
 				{
 					node->neighbors[index++] = Board[oY][oX];
 				}
@@ -41,12 +44,12 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
 	}
 	else
 	{
-		for (int i = -1; i < 2; i++)
+		for (int i = -1; i < 2; i += 2)
 		{
-			if (node->row + i > 0 && node->row + i < height && !Board[node->row + i][node->column]->wall && node->row + i != node->row)
+			if (node->row + i >= 0 && node->row + i < height && !Board[node->row + i][node->column]->wall)
 				node->neighbors[index++] = Board[node->row + i][node->column];
 
-			if (node->column + i > 0 && node->column + i < width && !Board[node->row][node->column + i]->wall && node->column + i != node->column)
+			if (node->column + i >= 0 && node->column + i < width && !Board[node->row][node->column + i]->wall)
 				node->neighbors[index++] = Board[node->row][node->column + i];
 		}
 	}
