@@ -36,7 +36,12 @@ By default the program utilizes across and diagonal if the 2nd command line argu
 
 ## Creating a board
 
-Create a _.txt_ file and fill it with the following characters:
+Inside the __src/Boards/__ directory there exists test boards that may be utilized for testing.<br />
+Inside the __src/Boards/Invalid__ directory exists test boards that are deemed to be invalid by the program.<br />
+
+Here are a few guidelines in Creating a Board of your own...<br />
+
+Create a _.txt_ file and fill it with the following characters:<br />
 
 * [S, s] : Start Node
 * [E, e] : End Node
