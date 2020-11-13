@@ -138,8 +138,17 @@ List *removeNode(List **head, int index)
 	return cursor;
 }
 
+List *pop(List **head)
+{
+	return removeNode(head, listLength(*head) - 1);
+}
+
+List *dequeue(List **head)
+{
+	return removeNode(head, 0);
+}
+
 void destroy(List *node)
 {
 	free(node);
 }
-

@@ -50,8 +50,6 @@ bool search(List *head, Node *node);
 void freeList(List *head);
 int listLength(List *head);
 List *removeNode(List **head, int index);
+List *pop(List **head);
+List *dequeue(List **head);
 void destroy(List *node);
-
-
-
-

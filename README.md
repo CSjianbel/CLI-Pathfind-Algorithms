@@ -1,7 +1,7 @@
 # CLI A* Pathfinding Algorithm
  
 Command Line Program version of the A* pathfinding Algorithm written in C<br />
-Recreating a List Data Structure to utilize for the algorithm.<br /> 
+Recreating the List Data Structure to utilize for the algorithm.<br /> 
 
 ## Clone
 ```bash
