@@ -98,11 +98,11 @@ void printBoard(int height, int width, Node *board[height][width])
 		{
 			if (board[i][j]->start)
 			{
-				printf("S");
+				printf("%c", START);
 			}
 			else if (board[i][j]->end)
 			{
-				printf("E");
+				printf("%c", END);
 			}
 			else if (board[i][j]->path)
 			{
@@ -110,11 +110,11 @@ void printBoard(int height, int width, Node *board[height][width])
 			}
 			else if (board[i][j]->wall)
 			{
-				printf("#");
+				printf("%c", WALL);
 			}
 			else
 			{
-				printf("_");
+				printf("%c", OPEN);
 			}
 			printf(" ");
 		}
@@ -177,9 +177,7 @@ List *getNode(List *head, int index)
 {
 	// If the index is invalid for the given linked list
 	if (index < 0 && index >= listLength(head))
-	{
 		return NULL;
-	}
 
 	while (index)
 	{
@@ -235,6 +233,7 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 		{
 			Node *neighbor = current->node->neighbors[i];
 
+			// if neighbor is in the closedSet
 			if (search(closedSet, neighbor))
 				continue;
 
@@ -256,6 +255,7 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 				newPath = true;
 			}
 
+			// if new path has been found
 			if (newPath)
 			{
 				neighbor->previous = current->node;
@@ -265,6 +265,7 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 		}
 	}
 
+	// Free memory allocated by the lists
 	freeList(openSet);
 	freeList(closedSet);
 	return false;
