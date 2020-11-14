@@ -29,7 +29,7 @@ bool verifyBoard(char *path)
 	}
 
 	fclose(infile);				
-	// If there are more than 1 START or END characters in the board then it is invalid
+	// If START and END characters count is not 1 then it is an invalid board
 	if (e != 1 || s != 1)
 		return false;
 
@@ -49,7 +49,8 @@ bool getDimension(char *path, int *height, int *width)
 	while (fscanf(infile, "%s", row) != EOF)
 	{
 		// if the width of the board is not symmentrical then it is an invalid board
-		if (strlen(row) != *width) {
+		if (strlen(row) != *width) 
+		{
 			fclose(infile);
 			return false;
 		}
@@ -186,7 +187,7 @@ List *getNode(List *head, int index)
 	return head;
 }
 
-bool AStar(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
+bool AStar(int height, int width, Node *board[height][width], Node *start, Node *goal)
 {
 	List *openSet = NULL, *closedSet = NULL;
 
@@ -262,7 +263,7 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 	return false;
 }
 
-bool depthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
+bool depthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal)
 {
 	List *stack = NULL;
 	List *explored = NULL;
@@ -313,7 +314,7 @@ bool depthFirstSearch(int height, int width, Node *board[height][width], Node *s
 	return false;
 }
 
-bool breadthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal, bool pathing)
+bool breadthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal)
 {
 	List *queue = NULL;
 	List *explored = NULL;
@@ -371,19 +372,19 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 
 	if (algorithm == 'a')
 	{
-		if (AStar(height, width, board, start, goal, pathing))
+		if (AStar(height, width, board, start, goal))
 			return true;
 		return false;
 	}
 	else if (algorithm == 'd')
 	{
-		if (depthFirstSearch(height, width, board, start, goal, pathing))
+		if (depthFirstSearch(height, width, board, start, goal))
 			return true;
 		return false;
 	}
 	else if (algorithm == 'b')
 	{
-		if (breadthFirstSearch(height, width, board, start, goal, pathing))
+		if (breadthFirstSearch(height, width, board, start, goal))
 			return true;
 		return false;
 	}
