@@ -1,4 +1,4 @@
-# CLI Pathfinding Algorithms
+# CLI Pathfind Algorithms
  
 Command Line Program implementation of different Search algorithms in C.<br />
 Namely A*, Depth First Search and lastly Breadth First Search.<br />
@@ -57,10 +57,10 @@ Windows:
 	* The program is set to across and diagonal if the 2nd & 3rd command line argument is ommitted.
 	* The program is set to A* search if the 3rd command line argument is ommitted.
 
-* Notes
+* Note
 
 	* The Board is the only command line argument that is required when running the program. 
-	* To be able to set the algorithm then all 4 command line arguments must be provided.  
+	* To be able to specify the algorithm then all 4 command line arguments must be provided.  
 
 ## Creating a board
 
@@ -71,10 +71,10 @@ Here are a few guidelines in Creating a Board of your own...<br />
 
 Create a _.txt_ file and fill it with the following characters:<br />
 
-* [S, s] : Start Node
-* [E, e] : End Node
-* \# : Wall
-* _ : Open Path
+* ['S', 's'] : Start Node
+* ['E', 'e'] : End Node
+* '#' : Wall
+* '_' : Open Path
 
 ### Rules
 

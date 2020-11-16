@@ -257,7 +257,6 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 		}
 	}
 
-	// Free memory allocated by the lists
 	freeList(openSet);
 	freeList(closedSet);
 	return false;
@@ -372,18 +371,21 @@ bool findPath(int height, int width, Node *board[height][width], Node *start, No
 
 	if (algorithm == 'a')
 	{
+		// Use A* Search
 		if (AStar(height, width, board, start, goal))
 			return true;
 		return false;
 	}
 	else if (algorithm == 'd')
 	{
+		// Use Depth First Search
 		if (depthFirstSearch(height, width, board, start, goal))
 			return true;
 		return false;
 	}
 	else if (algorithm == 'b')
 	{
+		// Use Breadth First Search
 		if (breadthFirstSearch(height, width, board, start, goal))
 			return true;
 		return false;
