@@ -1,5 +1,18 @@
+CC = gcc
+CFLAGS = -std=c11 -Wall -Werror 	
+
+MAIN = pathfind
+
 pathfind:
-	gcc -O3 -std=c11 -Wall -Werror -c -o assets/List.o src/List/List.c
-	gcc -O3 -std=c11 -Wall -Werror -c -o assets/pathfind.o src/pathfind.c
-	gcc -O3 -std=c11 -Wall -Werror -c -o assets/main.o src/main.c
-	gcc -O3 -std=c11 -Wall -Werror -o pathfind assets/main.o assets/pathfind.o assets/List.o -lm
+
+	$(CC) $(CFLAGS) -O3 -c -o assets/List.o src/List/List.c
+	$(CC) $(CFLAGS) -O3 -c -o assets/pathfind.o src/pathfind.c
+	$(CC) $(CFLAGS) -O3 -c -o assets/main.o src/main.c
+	$(CC) $(CFLAGS) -O3 -o $(MAIN) assets/main.o assets/pathfind.o assets/List.o -lm
+
+debug:
+
+	$(CC) $(CFLAGS) -O0 -c -o assets/List.o src/List/List.c
+	$(CC) $(CFLAGS) -O0 -c -o assets/pathfind.o src/pathfind.c
+	$(CC) $(CFLAGS) -O0 -c -o assets/main.o src/main.c
+	$(CC) $(CFLAGS) -O0 -ggdb3 -o $(MAIN) assets/main.o assets/pathfind.o assets/List.o -lm
