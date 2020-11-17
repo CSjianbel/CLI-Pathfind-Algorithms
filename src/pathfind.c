@@ -42,7 +42,9 @@ bool getDimension(char *path, int *height, int *width)
 	char row[MAX_WIDTH];
 
 	// Read the first line of the board
-	fscanf(infile, "%s", row);
+	if (fscanf(infile, "%s", row) == EOF)
+		return false;
+
 	*width = strlen(row);
 	*height = 1;	
 
@@ -73,7 +75,9 @@ void readBoard(char *path, int height, int width, Node *board[height][width], No
 
 	for (int i = 0; i < height; i++)
 	{
-		fscanf(infile, "%s", row);
+		if (fscanf(infile, "%s", row) == EOF) 
+			return;
+
 		for (int j = 0; j < width; j++)
 		{
 			board[i][j] = createNode(i, j, tolower(row[j]), pathing);
