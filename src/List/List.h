@@ -30,7 +30,7 @@ Node;
 typedef struct List
 {
 
-	struct Node *node;
+	Node *node;
 	struct List *next;
 
 }

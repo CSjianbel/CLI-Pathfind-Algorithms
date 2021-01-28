@@ -258,6 +258,7 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 				neighbor->hScore = heuristic(neighbor, goal);
 				neighbor->fScore = neighbor->gScore + neighbor->hScore; 
 			}
+
 		}
 	}
 
@@ -310,6 +311,7 @@ bool depthFirstSearch(int height, int width, Node *board[height][width], Node *s
 				neighbor->previous = current->node;
 			}
 		}
+
 	}
 
 	freeList(stack);
@@ -346,7 +348,7 @@ bool breadthFirstSearch(int height, int width, Node *board[height][width], Node 
 			return true;
 		}
 
-		// Add current to explored states
+		// Add current Node to explored states
 		append(&explored, current->node);
 
 		// Add neighbors to queue frontier
@@ -360,6 +362,7 @@ bool breadthFirstSearch(int height, int width, Node *board[height][width], Node 
 				neighbor->previous = current->node;
 			}
 		}
+
 	}
 
 	freeList(queue);

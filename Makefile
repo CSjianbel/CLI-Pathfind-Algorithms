@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Werror -O3
-CFLAGSD = -std=c11 -Wall -Werror -O0
+CFLAGSD = -std=c11 -Wall -Werror -O0 -ggdb3
 
 OUT = pathfind
 
@@ -16,10 +16,11 @@ debug:
 	$(CC) $(CFLAGSD) -c -o assets/List.o src/List/List.c
 	$(CC) $(CFLAGSD) -c -o assets/pathfind.o src/pathfind.c
 	$(CC) $(CFLAGSD) -c -o assets/main.o src/main.c
-	$(CC) $(CFLAGSD) -ggdb3 -o $(OUT) assets/main.o assets/pathfind.o assets/List.o -lm
+	$(CC) $(CFLAGSD) -o $(OUT) assets/main.o assets/pathfind.o assets/List.o -lm
 
 clean:
 
-	rm -f $(OUT)
+	rm $(OUT)
 	rm -rf assets
 	mkdir assets
+
