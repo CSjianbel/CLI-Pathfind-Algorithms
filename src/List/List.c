@@ -37,9 +37,7 @@ void getNeighbors(int height, int width, List* Board[height][width], List* node,
 
 				int oX = node->column + i, oY = node->row + j;
 				if (oX >= 0 && oX < width && oY >= 0 && oY < height && !Board[oY][oX]->wall) 
-				{
 					node->neighbors[index++] = Board[oY][oX];
-				}
 			}
 		}
 	}

@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 	
 	bool pathing = true;
 	char algorithm = 'a';
-	char *filepath = argv[1];
+	char* filepath = argv[1];
 
 	if (argc == 4)
 	{
@@ -20,14 +20,7 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
-		if (!strcmp("-d", argv[1]))
-		{
-			pathing = true;
-		}
-		else 
-		{
-			pathing = false;
-		}
+		pathing = !strcmp("-d", argv[1]) ? true : false;
 
 		if (strcmp(argv[2], "-a") && strcmp(argv[2], "-d") && strcmp(argv[2], "-b"))
 		{
@@ -36,17 +29,11 @@ int main(int argc, char **argv)
 		}
 
 		if (!strcmp(argv[2], "-a"))
-		{
 			algorithm = 'a';
-		}
 		else if (!strcmp(argv[2], "-d"))
-		{
 			algorithm = 'd';
-		}
 		else if (!strcmp(argv[2], "-b"))
-		{
 			algorithm = 'b';
-		}
 
 		filepath = argv[3];
 	} 
@@ -58,15 +45,7 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
-		if (!strcmp("-d", argv[1]))
-		{
-			pathing = true;
-		}
-		else 
-		{
-			pathing = false;
-		}
-
+		pathing = !strcmp("-d", argv[1]) ? true : false;
 		filepath = argv[2];
 	}
 
@@ -94,8 +73,9 @@ int main(int argc, char **argv)
 
 
 	// Create a 2d array of given dimensions
-	Node *board[height][width];
-	Node *start, *goal;
+	List* board[height][width];
+	List* start = NULL;
+	List* goal = NULL;
 
 	// Read the board into the array
 	readBoard(filepath, height, width, board, &start, &goal, pathing);
@@ -103,17 +83,11 @@ int main(int argc, char **argv)
 	printf("\n\n");
 	
 	if (algorithm == 'a')
-	{
 		printf("A* Search\n\n");
-	}
 	else if (algorithm == 'd')
-	{
 		printf("Depth First Search\n\n");
-	}
 	else
-	{
 		printf("Breadth First Search\n\n");
-	}
 
 	if (findPath(height, width, board, start, goal, algorithm, pathing))
 	{

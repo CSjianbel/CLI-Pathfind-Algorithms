@@ -1,8 +1,8 @@
 #include "pathfind.h"
 
-bool verifyBoard(char *path)
+bool verifyBoard(char* path)
 {
-	FILE *infile = fopen(path, "r");
+	FILE* infile = fopen(path, "r");
 	char row[MAX_WIDTH];
 
 	// Counts the START and END characters given in the board
@@ -36,9 +36,9 @@ bool verifyBoard(char *path)
 	return true;
 }
 
-bool getDimension(char *path, int *height, int *width)
+bool getDimension(char* path, int* height, int* width)
 {
-	FILE *infile = fopen(path, "r");
+	FILE* infile = fopen(path, "r");
 	char row[MAX_WIDTH];
 
 	// Read the first line of the board
@@ -68,9 +68,9 @@ bool getDimension(char *path, int *height, int *width)
 	return true;
 }
 
-void readBoard(char *path, int height, int width, Node *board[height][width], Node **start, Node **goal, bool pathing)
+void readBoard(char* path, int height, int width, List* board[height][width], List** start, List** goal, bool pathing)
 {	
-	FILE *infile = fopen(path, "r");
+	FILE* infile = fopen(path, "r");
 	char row[MAX_WIDTH];
 
 	for (int i = 0; i < height; i++)
@@ -95,38 +95,29 @@ void readBoard(char *path, int height, int width, Node *board[height][width], No
 	fclose(infile);
 }
 
-void printBoard(int height, int width, Node *board[height][width])
+void printBoard(int height, int width, List* board[height][width])
 {
 	for (int i = 0; i < height; i++)
 	{
 		for (int j = 0; j < width; j++)
 		{
+
 			if (board[i][j]->start)
-			{
 				printf("S");
-			}
 			else if (board[i][j]->end)
-			{
 				printf("E");
-			}
 			else if (board[i][j]->path)
-			{
 				printf("%c", PATH);
-			}
 			else if (board[i][j]->wall)
-			{
 				printf("%c", WALL);
-			}
 			else
-			{
 				printf(" ");
-			}
 		}
 		printf("\n");
 	}
 }
 
-double heuristic(Node *start, Node *goal)
+double heuristic(List* start, List* goal)
 {
 	int y1 = start->row, x1 = start->column;
 	int y2 = goal->row, x2 = goal->column;
@@ -135,7 +126,7 @@ double heuristic(Node *start, Node *goal)
 	return sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2));
 }
 
-void setNeighbors(int height, int width, Node *board[height][width], bool pathing)
+void setNeighbors(int height, int width, List* board[height][width], bool pathing)
 {
 	for (int i = 0; i < height; i++)
 	{
@@ -147,7 +138,7 @@ void setNeighbors(int height, int width, Node *board[height][width], bool pathin
 	}
 }
 
-int getLowestFScore(List *openset)
+int getLowestFScore(List* openset)
 {
 	// Returns -1 if the list is empty
 	if (!openset)
@@ -155,7 +146,7 @@ int getLowestFScore(List *openset)
 		return -1;
 	}
 
-	Node *cursor = openset->node;
+	List* cursor = openset;
 	int lowest = 0;
 	int index = 0;
 
@@ -165,9 +156,9 @@ int getLowestFScore(List *openset)
 	{
 		index++;
 
-		if (openset->node->fScore < cursor->fScore)
+		if (openset->fScore < cursor->fScore)
 		{
-			cursor = openset->node;
+			cursor = openset;
 			lowest = index;
 		}
 		openset = openset->next;
@@ -176,7 +167,7 @@ int getLowestFScore(List *openset)
 	return lowest;
 }
 
-List *getNode(List *head, int index)
+List* getNode(List* head, int index)
 {
 	// If the index is invalid for the given linked list
 	if (index < 0 && index >= listLength(head))
@@ -191,9 +182,10 @@ List *getNode(List *head, int index)
 	return head;
 }
 
-bool AStar(int height, int width, Node *board[height][width], Node *start, Node *goal)
+bool AStar(int height, int width, List* board[height][width], List* start, List* goal)
 {
-	List *openSet = NULL, *closedSet = NULL;
+	List* openSet = NULL;
+	List* closedSet = NULL;
 
 	// Initially add the start node to the openset
 	append(&openSet, start);
@@ -204,10 +196,10 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 		int lowestFindex = getLowestFScore(openSet);
 		List *current = getNode(openSet, lowestFindex);
 
-		if (current->node == goal)
+		if (current == goal)
 		{
 			// If the solution has been found
-			Node *tmp = current->node;
+			List* tmp = current;
 			tmp->path = true;
 
 			while (tmp->previous)
@@ -222,18 +214,18 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 		}
 
 		// Remove winner from openset and append to closedSet
-		List *removed = removeNode(&openSet, lowestFindex);
-		append(&closedSet, removed->node);
+		List* removed = removeNode(&openSet, lowestFindex);
+		append(&closedSet, removed);
 
-		for (int i = 0; current->node->neighbors[i]; i++)
+		for (int i = 0; current->neighbors[i]; i++)
 		{
-			Node *neighbor = current->node->neighbors[i];
+			List* neighbor = current->neighbors[i];
 
 			// if neighbor is in the closedSet
 			if (search(closedSet, neighbor))
 				continue;
 
-			double tGscore = neighbor->gScore + heuristic(current->node, neighbor);
+			double tGscore = neighbor->gScore + heuristic(current, neighbor);
 
 			bool newPath = false;
 			if (search(openSet, neighbor))
@@ -254,7 +246,7 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 			// if new path has been found
 			if (newPath)
 			{
-				neighbor->previous = current->node;
+				neighbor->previous = current;
 				neighbor->hScore = heuristic(neighbor, goal);
 				neighbor->fScore = neighbor->gScore + neighbor->hScore; 
 			}
@@ -267,22 +259,22 @@ bool AStar(int height, int width, Node *board[height][width], Node *start, Node 
 	return false;
 }
 
-bool depthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal)
+bool depthFirstSearch(int height, int width, List* board[height][width], List* start, List* goal)
 {
-	List *stack = NULL;
-	List *explored = NULL;
+	List* stack = NULL;
+	List* explored = NULL;
 
 	// Initially add the start node to the stack frontier
 	append(&stack, start);
 
 	while (listLength(stack))
 	{
-		List *current = pop(&stack);
+		List* current = pop(&stack);
 
-		// If soltion has been found
-		if (current->node == goal)
+		// If solution has been found
+		if (current == goal)
 		{
-			Node *tmp = current->node;
+			List* tmp = current;
 			tmp->path = true;
 
 			while (tmp->previous)
@@ -297,18 +289,18 @@ bool depthFirstSearch(int height, int width, Node *board[height][width], Node *s
 		}
 
 		// Add current to explored states
-		if (!search(explored, current->node))
-			append(&explored, current->node);
+		if (!search(explored, current))
+			append(&explored, current);
 
 		// Add neighbors to stack frontier
-		for (int i = 0; current->node->neighbors[i]; i++)
+		for (int i = 0; current->neighbors[i]; i++)
 		{
-			Node *neighbor = current->node->neighbors[i];
+			List* neighbor = current->neighbors[i];
 
 			if (!search(explored, neighbor) && !search(stack, neighbor) && !neighbor->wall)
 			{
 				append(&stack, neighbor);
-				neighbor->previous = current->node;
+				neighbor->previous = current;
 			}
 		}
 
@@ -319,22 +311,22 @@ bool depthFirstSearch(int height, int width, Node *board[height][width], Node *s
 	return false;
 }
 
-bool breadthFirstSearch(int height, int width, Node *board[height][width], Node *start, Node *goal)
+bool breadthFirstSearch(int height, int width, List* board[height][width], List* start, List* goal)
 {
-	List *queue = NULL;
-	List *explored = NULL;
+	List* queue = NULL;
+	List* explored = NULL;
 
 	// Initially add the start node to the queue frontier
 	append(&queue, start);
 
 	while (listLength(queue))
 	{
-		List *current = dequeue(&queue);
+		List* current = dequeue(&queue);
 
 		// If solution has been found
-		if (current->node == goal)
+		if (current == goal)
 		{
-			Node *tmp = current->node;
+			List* tmp = current;
 			tmp->path = true;
 
 			while (tmp->previous)
@@ -349,20 +341,19 @@ bool breadthFirstSearch(int height, int width, Node *board[height][width], Node 
 		}
 
 		// Add current Node to explored states
-		append(&explored, current->node);
+		append(&explored, current);
 
 		// Add neighbors to queue frontier
-		for (int i = 0; current->node->neighbors[i]; i++)
+		for (int i = 0; current->neighbors[i]; i++)
 		{
-			Node *neighbor = current->node->neighbors[i];
+			List* neighbor = current->neighbors[i];
 
 			if (!search(explored, neighbor) && !search(queue, neighbor) && !neighbor->wall)
 			{
 				append(&queue, neighbor);
-				neighbor->previous = current->node;
+				neighbor->previous = current;
 			}
 		}
-
 	}
 
 	freeList(queue);
@@ -370,33 +361,47 @@ bool breadthFirstSearch(int height, int width, Node *board[height][width], Node 
 	return false;
 }
 
-bool findPath(int height, int width, Node *board[height][width], Node *start, Node *goal, char algorithm, bool pathing)
+void setup()
 {
+	// Initialize Algorithms Function Pointer Array
+	Algorithms[Star] = AStar;
+	Algorithms[DFS] = depthFirstSearch;
+	Algorithms[BFS] = breadthFirstSearch;
+}
+
+bool findPath(int height, int width, List* board[height][width], List* start, List* goal, char algorithm, bool pathing)
+{
+	// Setup and Initialize Algorithms
+	setup();
 	// Set neighbors of Nodes
 	setNeighbors(height, width, board, pathing);
 	printf("Finding path...\n\n");
 
-	if (algorithm == 'a')
-	{
-		// Use A* Search
-		if (AStar(height, width, board, start, goal))
-			return true;
-		return false;
-	}
-	else if (algorithm == 'd')
-	{
-		// Use Depth First Search
-		if (depthFirstSearch(height, width, board, start, goal))
-			return true;
-		return false;
-	}
-	else if (algorithm == 'b')
-	{
-		// Use Breadth First Search
-		if (breadthFirstSearch(height, width, board, start, goal))
-			return true;
-		return false;
-	}
-
+	if (Algorithms[tolower(algorithm) - 'a'](height, width, board, start, goal))
+		return true;
 	return false;
+
+	// if (algorithm == 'a')
+	// {
+	// 	// Use A* Search
+	// 	if (AStar(height, width, board, start, goal))
+	// 		return true;
+	// 	return false;
+	// }
+	// else if (algorithm == 'd')
+	// {
+	// 	// Use Depth First Search
+	// 	if (depthFirstSearch(height, width, board, start, goal))
+	// 		return true;
+	// 	return false;
+	// }
+	// else if (algorithm == 'b')
+	// {
+	// 	// Use Breadth First Search
+	// 	if (breadthFirstSearch(height, width, board, start, goal))
+	// 		return true;
+	// 	return false;
+	// }
+
+	// return false;
 }
