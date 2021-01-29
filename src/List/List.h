@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 
 #define Across 4
 #define Diagonal 8
 
-typedef struct Node
+typedef struct List
 {
-	
 	int row;
 	int column;
 
@@ -21,35 +19,28 @@ typedef struct Node
 	double gScore;
 	double fScore;
 
-	struct Node *previous;
-	struct Node **neighbors;
+	struct List *previous;
+	struct List **neighbors;
 
-}
-Node;
-
-typedef struct List
-{
-
-	Node *node;
 	struct List *next;
-
 }
 List;
 
-// Node Constructor
-Node *createNode(int row, int col, char state, bool pathing);
-// Sets the neighboring Nodes of a given Node
-void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing);
+// List Constructor
+List *createNode(int row, int col, char state, bool pathing);
+// Sets the neighboring Nodes of a given List
+void getNeighbors(int height, int width, List *Board[height][width], List *node, bool pathing);
 
 /*
  * List Methods:
  *		Append, Search, Remove, Free list
  */
-void append(List **head, Node *node);
-bool search(List *head, Node *node);
+void append(List **head, List *node);
+bool search(List *head, List *node);
 void freeList(List *head);
+
 int listLength(List *head);
-List *removeNode(List **head, int index);
-List *pop(List **head);
-List *dequeue(List **head);
+List* removeNode(List **head, int index);
+List* pop(List **head);
+List* dequeue(List **head);
 void destroy(List *node);

@@ -1,8 +1,8 @@
 #include "List.h"
 
-Node *createNode(int row, int col, char state, bool pathing)	
+List* createNode(int row, int col, char state, bool pathing)	
 {
-	Node *newNode = malloc(sizeof(Node));	
+	List* newNode = malloc(sizeof(List));	
 
 	newNode->row = row;
 	newNode->column = col;
@@ -16,12 +16,14 @@ Node *createNode(int row, int col, char state, bool pathing)
 
 	newNode->previous = NULL;
 
-	newNode->neighbors = calloc(pathing ? Diagonal : Across, sizeof(Node*));
+	newNode->neighbors = calloc(pathing ? Diagonal : Across, sizeof(List*));
+
+	newNode->next = NULL;
 
 	return newNode;
 }
 
-void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing)
+void getNeighbors(int height, int width, List* Board[height][width], List* node, bool pathing)
 {
 	int index = 0;
 	if (pathing) 
@@ -54,31 +56,27 @@ void getNeighbors(int height, int width, Node *Board[height][width], Node *node,
 	}
 }
 
-void append(List **head, Node *node)
+void append(List** head, List* node)
 {
-	List *n = malloc(sizeof(List));
-	n->node = node;
-	n->next = NULL;
-
 	if (!*head)
 	{
-		*head = n;
+		*head = node;
 	}
 	else 
 	{
-		List *tmp = *head;
+		List* tmp = *head;
 		while (tmp->next)
 			tmp = tmp->next;
 
-		tmp->next = n;
+		tmp->next = node;
 	}
 }
 
-bool search(List *head, Node *node)
+bool search(List* head, List* node)
 {
 	while (head)
 	{
-		if (head->node == node)
+		if (head == node)
 			return true;
 
 		head = head->next;
@@ -86,17 +84,17 @@ bool search(List *head, Node *node)
 	return false;
 }
 
-void freeList(List *head)
+void freeList(List* head)
 {
 	while (head)
 	{
-		List *tmp = head->next;
-		free(head);
+		List* tmp = head->next;
+		destroy(head);
 		head = tmp;
 	}
 }
 
-int listLength(List *head)
+int listLength(List* head)
 {
 	int counter = 0;
 
@@ -108,13 +106,11 @@ int listLength(List *head)
 	return counter;
 }
 
-List *removeNode(List **head, int index)
+List* removeNode(List** head, int index)
 {
-	List *cursor = *head;
+	List* cursor = *head;
 	if (index < 0 || index >= listLength(*head))
-	{
 		return NULL;
-	}
 	
 	if (!index)
 	{
@@ -124,7 +120,7 @@ List *removeNode(List **head, int index)
 	{
 		while (1)
 		{
-			List *tmp = cursor;
+			List* tmp = cursor;
 			cursor = cursor->next;
 			if (!--index)
 			{
