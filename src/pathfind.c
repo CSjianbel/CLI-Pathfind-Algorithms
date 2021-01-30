@@ -1,5 +1,10 @@
 #include "pathfind.h"
 
+/*
+ * Verifies if Board.txt is a valid board 
+ * Params: char*
+ * Return: bool
+ */
 bool verifyBoard(char* path)
 {
 	FILE* infile = fopen(path, "r");
@@ -36,6 +41,11 @@ bool verifyBoard(char* path)
 	return true;
 }
 
+/*
+ * Returns the Dimension (WxH) of Board.txt
+ * Params: char*, int*, int*
+ * Return: bool
+ */
 bool getDimension(char* path, int* height, int* width)
 {
 	FILE* infile = fopen(path, "r");
@@ -68,6 +78,11 @@ bool getDimension(char* path, int* height, int* width)
 	return true;
 }
 
+/*
+ * Reads the Board.txt file and fills in the Board[][] with Nodes
+ * Params: char*, int, int, List*[][], List**, List**, bool
+ * Return: void
+ */
 void readBoard(char* path, int height, int width, List* board[height][width], List** start, List** goal, bool pathing)
 {	
 	FILE* infile = fopen(path, "r");
@@ -82,19 +97,21 @@ void readBoard(char* path, int height, int width, List* board[height][width], Li
 		{
 			board[i][j] = createNode(i, j, tolower(row[j]), pathing);
 			if (tolower(row[j]) == 's')
-			{
 				*start = board[i][j];
-			}
+
 			if (tolower(row[j]) == 'e')
-			{
 				*goal = board[i][j];
-			}
 		}
 	}
 
 	fclose(infile);
 }
 
+/*
+ * Prints the board to the stdout
+ * Params: int, int, List*[][]
+ * Return: void
+ */
 void printBoard(int height, int width, List* board[height][width])
 {
 	for (int i = 0; i < height; i++)
@@ -117,6 +134,11 @@ void printBoard(int height, int width, List* board[height][width])
 	}
 }
 
+/* 
+ * Returns the Euclidean distance of 2 Nodes
+ * Params: List*, List*
+ * Return: double 
+ */
 double heuristic(List* start, List* goal)
 {
 	int y1 = start->row, x1 = start->column;
@@ -126,6 +148,11 @@ double heuristic(List* start, List* goal)
 	return sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2));
 }
 
+/*
+ * Calls getNeighbors() for each Node in Board
+ * Params: int, int, List*[][], bool
+ * Return: void
+ */
 void setNeighbors(int height, int width, List* board[height][width], bool pathing)
 {
 	for (int i = 0; i < height; i++)
@@ -138,13 +165,16 @@ void setNeighbors(int height, int width, List* board[height][width], bool pathin
 	}
 }
 
+/*
+ * Returns the index of the node with the lowest FScore
+ * Param: List*
+ * Return: int
+ */
 int getLowestFScore(List* openset)
 {
 	// Returns -1 if the list is empty
 	if (!openset)
-	{
 		return -1;
-	}
 
 	List* cursor = openset;
 	int lowest = 0;
@@ -167,21 +197,36 @@ int getLowestFScore(List* openset)
 	return lowest;
 }
 
+/*
+ * Returns a pointer to the Node given the index
+ * Param: List*, int
+ * Return: List*
+ */
 List* getNode(List* head, int index)
 {
 	// If the index is invalid for the given linked list
 	if (index < 0 && index >= listLength(head))
 		return NULL;
 
-	while (index)
-	{
+	while (index--)
 		head = head->next;
-		index--;
-	}
+
+	/* 
+	 * while (index)
+	 * {
+	 * 		head = head->next;
+	 * 		index--;
+	 * }
+	 */
 
 	return head;
 }
 
+/*
+ * A* Pathfinding Algorithm
+ * Param: int, int, List*[][], List*, List*
+ * Return: bool
+ */
 bool AStar(int height, int width, List* board[height][width], List* start, List* goal)
 {
 	List* openSet = NULL;
@@ -259,6 +304,11 @@ bool AStar(int height, int width, List* board[height][width], List* start, List*
 	return false;
 }
 
+/*
+ * Depth-First Search Algorithm
+ * Param: int, int, List*[][], List*, List*
+ * Return: bool
+ */
 bool depthFirstSearch(int height, int width, List* board[height][width], List* start, List* goal)
 {
 	List* stack = NULL;
@@ -311,6 +361,11 @@ bool depthFirstSearch(int height, int width, List* board[height][width], List* s
 	return false;
 }
 
+/*
+ * Breadth-First Search Algorithm
+ * Param: int, int, List*[][], List*, List*
+ * Return: bool
+ */
 bool breadthFirstSearch(int height, int width, List* board[height][width], List* start, List* goal)
 {
 	List* queue = NULL;
@@ -361,14 +416,21 @@ bool breadthFirstSearch(int height, int width, List* board[height][width], List*
 	return false;
 }
 
+/*
+ * Initializes the Algorithms Function Pointer array
+ */
 void setup()
 {
-	// Initialize Algorithms Function Pointer Array
 	Algorithms[Star] = AStar;
 	Algorithms[DFS] = depthFirstSearch;
 	Algorithms[BFS] = breadthFirstSearch;
 }
 
+/* 
+ * Runs the desired algorithm on the Board 
+ * Params: int, int, List*[][], List*, List*, char, bool
+ * Return: bool
+ */
 bool findPath(int height, int width, List* board[height][width], List* start, List* goal, char algorithm, bool pathing)
 {
 	// Setup and Initialize Algorithms

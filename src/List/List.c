@@ -1,5 +1,10 @@
 #include "List.h"
 
+/*
+ * Constructor for a Node
+ * Params: int, int, char, bool
+ * Return: List*
+ */
 List* createNode(int row, int col, char state, bool pathing)	
 {
 	List* newNode = malloc(sizeof(List));	
@@ -23,6 +28,11 @@ List* createNode(int row, int col, char state, bool pathing)
 	return newNode;
 }
 
+/*
+ * Sets the neighbors for a given Node in the Board
+ * params: int, int, List*[][], List*, bool
+ * Return: void
+ */ 
 void getNeighbors(int height, int width, List* Board[height][width], List* node, bool pathing)
 {
 	int index = 0;
@@ -54,6 +64,11 @@ void getNeighbors(int height, int width, List* Board[height][width], List* node,
 	}
 }
 
+/*
+ * Appends a node to the end of the List
+ * Params: List**, List*
+ * Return: void
+ */
 void append(List** head, List* node)
 {
 	if (!*head)
@@ -70,6 +85,11 @@ void append(List** head, List* node)
 	}
 }
 
+/*
+ * Searches if a node exists in the list
+ * Params: List*, List*
+ * Return: bool
+ */
 bool search(List* head, List* node)
 {
 	while (head)
@@ -82,6 +102,11 @@ bool search(List* head, List* node)
 	return false;
 }
 
+/*
+ * Frees the allocated memory for the List
+ * Params: List*
+ * Return: void
+ */
 void freeList(List* head)
 {
 	while (head)
@@ -92,6 +117,11 @@ void freeList(List* head)
 	}
 }
 
+/*
+ * Returns the current length of the list
+ * Params: List*
+ * Return: int
+ */
 int listLength(List* head)
 {
 	int counter = 0;
@@ -104,6 +134,11 @@ int listLength(List* head)
 	return counter;
 }
 
+/*
+ * Removes the (index)th Node from the list
+ * Params: List**, int
+ * Return: List*
+ */
 List* removeNode(List** head, int index)
 {
 	List* cursor = *head;
@@ -131,16 +166,31 @@ List* removeNode(List** head, int index)
 	return cursor;
 }
 
+/*
+ * Pops the Last Node of the List
+ * Params: List**
+ * Return: List*
+ */
 List *pop(List **head)
 {
 	return removeNode(head, listLength(*head) - 1);
 }
 
+/*
+ * Dequeues the First Node of the List
+ * Params: List**
+ * Return: List*
+ */
 List *dequeue(List **head)
 {
 	return removeNode(head, 0);
 }
 
+/*
+ * Wrapper for free()
+ * Params: List*
+ * Return: void
+ */
 void destroy(List *node)
 {
 	free(node);
