@@ -222,6 +222,13 @@ List* getNode(List* head, int index)
 	return head;
 }
 
+void freeBoard(int height, int width, List* board[height][width])
+{
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			free(board[i][j]);
+}
+
 /*
  * A* Pathfinding Algorithm
  * Param: int, int, List*[][], List*, List*
@@ -253,8 +260,9 @@ bool AStar(int height, int width, List* board[height][width], List* start, List*
 				tmp->path = true;
 			}
 
-			freeList(openSet);
-			freeList(closedSet);
+			freeBoard(height, width, board);
+			// freeList(openSet);
+			// freeList(closedSet);
 			return true;
 		}
 
@@ -299,8 +307,9 @@ bool AStar(int height, int width, List* board[height][width], List* start, List*
 		}
 	}
 
-	freeList(openSet);
-	freeList(closedSet);
+	freeBoard(height, width, board);
+	// freeList(openSet);
+	// freeList(closedSet);
 	return false;
 }
 
@@ -421,9 +430,9 @@ bool breadthFirstSearch(int height, int width, List* board[height][width], List*
  */
 void setup()
 {
-	Algorithms[Star] = AStar;
-	Algorithms[DFS] = depthFirstSearch;
-	Algorithms[BFS] = breadthFirstSearch;
+	Algorithms[Star - 'a'] = AStar;
+	Algorithms[DFS - 'a'] = depthFirstSearch;
+	Algorithms[BFS - 'a'] = breadthFirstSearch;
 }
 
 /* 
