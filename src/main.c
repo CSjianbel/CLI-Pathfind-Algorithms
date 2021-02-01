@@ -67,7 +67,7 @@ void verifyArgs(int argc, char** argv, bool* pathing, char* algorithm, char** fi
 	if (argc < 2 || argc > 4)
 	{
 		err_args("");
-		return 1;
+		exit(1);
 	}
 	
 	if (argc == 4)

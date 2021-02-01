@@ -26,4 +26,4 @@ clean:
 
 	rm $(OUT)
 	rm -rf assets
-	mkdir assets
+
