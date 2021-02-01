@@ -1,478 +1,230 @@
 #include "pathfind.h"
+#include "board.h"
 
 /*
- * Verifies if Board.txt is a valid board 
- * Params: char*
- * Return: bool
+ * Returns the index of the node with the lowest Fscore 
+ * Params: ListNode*
+ * Return: int
  */
-bool verifyBoard(char* path)
+int getLowestFscore(ListNode* openset)
 {
-	FILE* infile = fopen(path, "r");
-	char row[MAX_WIDTH];
+    int index = 0;
+    int lowest = 0;
+    ListNode* tmp = openset;
 
-	// Counts the START and END characters given in the board
-	int e = 0, s = 0;
+    openset = openset->next;
 
-	while (fscanf(infile, "%s", row) != EOF)
-	{
-		for (int i = 0; row[i]; i++)
-		{
-			char tmp = tolower(row[i]);
-			// if the board contains invalid characters
-			if (tmp != '#' && tmp != 's' && tmp != 'e' && tmp != '_')
-			{
-				fclose(infile);
-				return false;
-			}
+    while (openset)
+    {
+        index++;
 
-			if (tmp == 's')
-				s++;
-			
-			if (tmp == 'e')
-				e++;
-		}
-	}
+        if (openset->fScore < tmp->fScore)
+        {
+            lowest = index;
+            tmp = openset;
+        }
 
-	fclose(infile);				
-	// If START and END characters count is not 1 then it is an invalid board
-	if (e != 1 || s != 1)
-		return false;
-
-	return true;
+        openset = openset->next;
+    }
+    return lowest;
 }
 
 /*
- * Returns the Dimension (WxH) of Board.txt
- * Params: char*, int*, int*
- * Return: bool
+ * Returns the Euclidean distance between 2 Nodes
+ * Params: ListNode*, ListNode*
+ * Return: double
  */
-bool getDimension(char* path, int* height, int* width)
+double heuristic(ListNode* start, ListNode* goal)
 {
-	FILE* infile = fopen(path, "r");
-	char row[MAX_WIDTH];
-
-	// Read the first line of the board
-	if (fscanf(infile, "%s", row) == EOF)
-		return false;
-
-	*width = strlen(row);
-	*height = 1;	
-
-	while (fscanf(infile, "%s", row) != EOF)
-	{
-		// if the width of the board is not symmentrical then it is an invalid board
-		if (strlen(row) != *width) 
-		{
-			fclose(infile);
-			return false;
-		}
-
-		(*height)++;	
-	}
-
-	fclose(infile);
-
-	if (!verifyBoard(path))
-		return false;
-
-	return true;
-}
-
-/*
- * Reads the Board.txt file and fills in the Board[][] with Nodes
- * Params: char*, int, int, List*[][], List**, List**, bool
- * Return: void
- */
-void readBoard(char* path, int height, int width, List* board[height][width], List** start, List** goal, bool pathing)
-{	
-	FILE* infile = fopen(path, "r");
-	char row[MAX_WIDTH];
-
-	for (int i = 0; i < height; i++)
-	{
-		if (fscanf(infile, "%s", row) == EOF) 
-			return;
-
-		for (int j = 0; j < width; j++)
-		{
-			board[i][j] = createNode(i, j, tolower(row[j]), pathing);
-			if (tolower(row[j]) == 's')
-				*start = board[i][j];
-
-			if (tolower(row[j]) == 'e')
-				*goal = board[i][j];
-		}
-	}
-
-	fclose(infile);
-}
-
-/*
- * Prints the board to the stdout
- * Params: int, int, List*[][]
- * Return: void
- */
-void printBoard(int height, int width, List* board[height][width])
-{
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-
-			if (board[i][j]->start)
-				printf("S");
-			else if (board[i][j]->end)
-				printf("E");
-			else if (board[i][j]->path)
-				printf("%c", PATH);
-			else if (board[i][j]->wall)
-				printf("%c", WALL);
-			else
-				printf(" ");
-		}
-		printf("\n");
-	}
-}
-
-/* 
- * Returns the Euclidean distance of 2 Nodes
- * Params: List*, List*
- * Return: double 
- */
-double heuristic(List* start, List* goal)
-{
-	int y1 = start->row, x1 = start->column;
-	int y2 = goal->row, x2 = goal->column;
+	int y1 = start->row, x1 = start->col;
+	int y2 = goal->row, x2 = goal->col;
 	
 	// Euclidean distance of 2 Nodes
 	return sqrt(pow((x1 - x2), 2) + pow((y1 - y2), 2));
 }
 
 /*
- * Calls getNeighbors() for each Node in Board
- * Params: int, int, List*[][], bool
- * Return: void
- */
-void setNeighbors(int height, int width, List* board[height][width], bool pathing)
-{
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			if (!board[i][j]->wall)
-				getNeighbors(height, width, board, board[i][j], pathing);
-		}
-	}
-}
-
-/*
- * Returns the index of the node with the lowest FScore
- * Param: List*
- * Return: int
- */
-int getLowestFScore(List* openset)
-{
-	// Returns -1 if the list is empty
-	if (!openset)
-		return -1;
-
-	List* cursor = openset;
-	int lowest = 0;
-	int index = 0;
-
-	openset = openset->next;
-
-	while (openset)
-	{
-		index++;
-
-		if (openset->fScore < cursor->fScore)
-		{
-			cursor = openset;
-			lowest = index;
-		}
-		openset = openset->next;
-	}
-
-	return lowest;
-}
-
-/*
- * Returns a pointer to the Node given the index
- * Param: List*, int
- * Return: List*
- */
-List* getNode(List* head, int index)
-{
-	// If the index is invalid for the given linked list
-	if (index < 0 && index >= listLength(head))
-		return NULL;
-
-	while (index--)
-		head = head->next;
-
-	/* 
-	 * while (index)
-	 * {
-	 * 		head = head->next;
-	 * 		index--;
-	 * }
-	 */
-
-	return head;
-}
-
-void freeBoard(int height, int width, List* board[height][width])
-{
-	for (int i = 0; i < height; i++)
-		for (int j = 0; j < width; j++)
-			free(board[i][j]);
-}
-
-/*
- * A* Pathfinding Algorithm
- * Param: int, int, List*[][], List*, List*
+ * A* Pathfinding Algorithm 
+ * Params: int, int, ListNode*[][], ListNode*, ListNode
  * Return: bool
  */
-bool AStar(int height, int width, List* board[height][width], List* start, List* goal)
+bool Astar(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
 {
-	List* openSet = NULL;
-	List* closedSet = NULL;
+    printf("A* Search\n\n");
+    ListNode* openset = NULL;
+    ListNode* closedset = NULL;
 
-	// Initially add the start node to the openset
-	append(&openSet, start);
-	start->fScore = heuristic(start, goal);
+    // Add the start Node to the openset
+    append(&openset, start);
+    start->fScore = heuristic(start, goal);
 
-	while (listLength(openSet))
-	{
-		int lowestFindex = getLowestFScore(openSet);
-		List *current = getNode(openSet, lowestFindex);
+    while (getListLength(openset))
+    {
+        int lowestFIndex = getLowestFscore(openset);
+        ListNode* current = removeListNode(&openset, lowestFIndex);
 
-		if (current == goal)
-		{
-			// If the solution has been found
-			List* tmp = current;
-			tmp->path = true;
+        // Solution has been found
+        if (current == goal)
+        {
+            ListNode* tmp = current;
+            while (tmp->previous)
+            {
+                tmp->path = true;
+                tmp = tmp->previous;
+            }
 
-			while (tmp->previous)
-			{
-				tmp = tmp->previous;
-				tmp->path = true;
-			}
+            return true;
+        }
 
-			freeBoard(height, width, board);
-			// freeList(openSet);
-			// freeList(closedSet);
-			return true;
-		}
+        // Append current to closedset
+        if (!search(closedset, current))
+            append(&closedset, current);
+        
+        for (int i = 0; current->neighbors[i]; i++)
+        {
+            ListNode* neighbor = current->neighbors[i];
 
-		// Remove winner from openset and append to closedSet
-		List* removed = removeNode(&openSet, lowestFindex);
-		append(&closedSet, removed);
+            // If neighbor is already in the closedset
+            if (search(closedset, neighbor))
+                continue;
 
-		for (int i = 0; current->neighbors[i]; i++)
-		{
-			List* neighbor = current->neighbors[i];
-
-			// if neighbor is in the closedSet
-			if (search(closedSet, neighbor))
-				continue;
-
-			double tGscore = neighbor->gScore + heuristic(current, neighbor);
-
-			bool newPath = false;
-			if (search(openSet, neighbor))
-			{
-				if (tGscore < neighbor->gScore)
-				{
-					neighbor->gScore = tGscore;
-					newPath = true;
-				}
-			}
-			else
-			{
+            double tGscore = neighbor->gScore + heuristic(current, neighbor);
+            
+            bool newPathFound = false;
+            if (search(openset, neighbor))
+            {
+                if (tGscore < neighbor->gScore)
+                {
+                    neighbor->gScore = tGscore;
+                    newPathFound = true;
+                }
+            }
+            else
+            {
 				neighbor->gScore = tGscore;
-				append(&openSet, neighbor);
-				newPath = true;
-			}
+				append(&openset, neighbor);
+				newPathFound = true;
+            }
 
-			// if new path has been found
-			if (newPath)
-			{
+            if (newPathFound)
+            {
 				neighbor->previous = current;
 				neighbor->hScore = heuristic(neighbor, goal);
 				neighbor->fScore = neighbor->gScore + neighbor->hScore; 
-			}
-
-		}
-	}
-
-	freeBoard(height, width, board);
-	// freeList(openSet);
-	// freeList(closedSet);
-	return false;
+            }
+        }
+    }
+    return false;
 }
 
 /*
  * Depth-First Search Algorithm
- * Param: int, int, List*[][], List*, List*
+ * Params: int, int, ListNode*[][], ListNode*, ListNode
  * Return: bool
  */
-bool depthFirstSearch(int height, int width, List* board[height][width], List* start, List* goal)
+bool depthFirstSearch(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
 {
-	List* stack = NULL;
-	List* explored = NULL;
+    printf("Depth First Search\n\n");
+    ListNode* stack = NULL;
+    ListNode* explored = NULL;
 
-	// Initially add the start node to the stack frontier
-	append(&stack, start);
+    // push the start node to the stack
+    append(&stack, start);
 
-	while (listLength(stack))
-	{
-		List* current = pop(&stack);
+    while (getListLength(stack))
+    {
+        ListNode* current = pop(&stack);
 
-		// If solution has been found
-		if (current == goal)
-		{
-			List* tmp = current;
-			tmp->path = true;
+        // Solution has been found
+        if (current == goal)
+        {
+            while (current->previous)
+            {
+                current = current->previous;
+                current->path = true;
+            }
+            return true;
+        }
 
-			while (tmp->previous)
-			{
-				tmp = tmp->previous;
-				tmp->path = true;
-			}
+        // Add current to explored states
+        if (!search(explored, current))
+            append(&explored, current);
 
-			freeList(stack);
-			freeList(explored);	
-			return true;
-		}
+        // Add neighbor nodes to stack frontier
+        for (int i = 0; current->neighbors[i]; i++)
+        {
+            ListNode* neighbor = current->neighbors[i];
+            if (!search(explored, neighbor) && !search(stack, neighbor) && !neighbor->wall)
+            {
+                append(&stack, neighbor);
+                neighbor->previous = current;
+            }
+        }
+    }
 
-		// Add current to explored states
-		if (!search(explored, current))
-			append(&explored, current);
-
-		// Add neighbors to stack frontier
-		for (int i = 0; current->neighbors[i]; i++)
-		{
-			List* neighbor = current->neighbors[i];
-
-			if (!search(explored, neighbor) && !search(stack, neighbor) && !neighbor->wall)
-			{
-				append(&stack, neighbor);
-				neighbor->previous = current;
-			}
-		}
-
-	}
-
-	freeList(stack);
-	freeList(explored);
-	return false;
+    return false;
 }
 
 /*
- * Breadth-First Search Algorithm
- * Param: int, int, List*[][], List*, List*
+ * Breath-First Search Algorithm
+ * Params: int, int, ListNode*[][], ListNode*, ListNode
  * Return: bool
  */
-bool breadthFirstSearch(int height, int width, List* board[height][width], List* start, List* goal)
+bool breathFirstSearch(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
 {
-	List* queue = NULL;
-	List* explored = NULL;
+    printf("Breath First Search\n\n");
+    ListNode* queue = NULL;
+    ListNode* explored = NULL;
 
-	// Initially add the start node to the queue frontier
-	append(&queue, start);
+    // enqueue the start node to the queue
+    append(&queue, start);
 
-	while (listLength(queue))
-	{
-		List* current = dequeue(&queue);
+    while (getListLength(queue))
+    {
+        ListNode* current = dequeue(&queue);
 
-		// If solution has been found
-		if (current == goal)
-		{
-			List* tmp = current;
-			tmp->path = true;
+        // Solution has been found
+        if (current == goal)
+        {
+            while (current->previous)
+            {
+                current = current->previous;
+                current->path = true;
+            }
+            return true;
+        }
 
-			while (tmp->previous)
-			{
-				tmp = tmp->previous;
-				tmp->path = true;
-			}
+        // Add current to explored states
+        if (!search(explored, current))
+            append(&explored, current);
 
-			freeList(queue);
-			freeList(explored);
-			return true;
-		}
+        // Add neighbor nodes to queue frontier
+        for (int i = 0; current->neighbors[i]; i++)
+        {
+            ListNode* neighbor = current->neighbors[i];
+            if (!search(explored, neighbor) && !search(queue, neighbor) && !neighbor->wall)
+            {
+                append(&queue, neighbor);
+                neighbor->previous = current;
+            }
+        }
+    }
 
-		// Add current Node to explored states
-		append(&explored, current);
+    return false;
 
-		// Add neighbors to queue frontier
-		for (int i = 0; current->neighbors[i]; i++)
-		{
-			List* neighbor = current->neighbors[i];
-
-			if (!search(explored, neighbor) && !search(queue, neighbor) && !neighbor->wall)
-			{
-				append(&queue, neighbor);
-				neighbor->previous = current;
-			}
-		}
-	}
-
-	freeList(queue);
-	freeList(explored);
-	return false;
 }
 
-/*
- * Initializes the Algorithms Function Pointer array
- */
-void setup()
+void setup(int height, int width, ListNode* board[height][width], bool pathing)
 {
-	Algorithms[Star - 'a'] = AStar;
-	Algorithms[DFS - 'a'] = depthFirstSearch;
-	Algorithms[BFS - 'a'] = breadthFirstSearch;
+    setNeighbors(height, width, board, pathing);
+    Algorithms[tolower(Star)] = Astar;
+    Algorithms[tolower(DFS)] = depthFirstSearch;
+    Algorithms[tolower(BFS)] = breathFirstSearch;
 }
 
-/* 
- * Runs the desired algorithm on the Board 
- * Params: int, int, List*[][], List*, List*, char, bool
- * Return: bool
- */
-bool findPath(int height, int width, List* board[height][width], List* start, List* goal, char algorithm, bool pathing)
+
+bool findPath(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal, char algorithm, bool pathing)
 {
-	// Setup and Initialize Algorithms
-	setup();
-	// Set neighbors of Nodes
-	setNeighbors(height, width, board, pathing);
-	printf("Finding path...\n\n");
-
-	if (Algorithms[tolower(algorithm) - 'a'](height, width, board, start, goal))
-		return true;
-	return false;
-
-	// if (algorithm == 'a')
-	// {
-	// 	// Use A* Search
-	// 	if (AStar(height, width, board, start, goal))
-	// 		return true;
-	// 	return false;
-	// }
-	// else if (algorithm == 'd')
-	// {
-	// 	// Use Depth First Search
-	// 	if (depthFirstSearch(height, width, board, start, goal))
-	// 		return true;
-	// 	return false;
-	// }
-	// else if (algorithm == 'b')
-	// {
-	// 	// Use Breadth First Search
-	// 	if (breadthFirstSearch(height, width, board, start, goal))
-	// 		return true;
-	// 	return false;
-	// }
-
-	// return false;
+    setup(height, width,board, pathing);
+    return Algorithms[tolower(algorithm)](height, width, board, start, goal);
 }

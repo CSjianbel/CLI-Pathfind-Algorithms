@@ -147,6 +147,7 @@ void printBoard(int height, int width, ListNode* board[height][width])
 		}
 		printf("\n");
 	}
+	printf("\n\n");
 }
 
 /* 

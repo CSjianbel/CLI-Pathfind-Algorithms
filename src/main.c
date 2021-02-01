@@ -1,10 +1,16 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "pathfind.h"
+#include "board.h"
+
+void err_args(char* extra_msg);
 
 int main(int argc, char **argv)
 {
 	if (argc < 2 || argc > 4)
 	{
-		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+		err_args("");
 		return 1;
 	}
 	
@@ -16,7 +22,7 @@ int main(int argc, char **argv)
 	{
 		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
 		{	
-			printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+			err_args("");
 			return 1;
 		}
 
@@ -24,7 +30,7 @@ int main(int argc, char **argv)
 
 		if (strcmp(argv[2], "-a") && strcmp(argv[2], "-d") && strcmp(argv[2], "-b"))
 		{
-			printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+			err_args("");
 			return 1;
 		}
 
@@ -41,7 +47,7 @@ int main(int argc, char **argv)
 	{
 		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
 		{	
-			printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+			err_args("");
 			return 1;
 		}
 
@@ -52,8 +58,8 @@ int main(int argc, char **argv)
 	FILE *test = fopen(filepath, "r");
 	if (!test)
 	{	
-		printf("Invalid structure filepath!\n\n");
-		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+		err_args("Invalid structure filepath!");
+		fclose(test);
 		return 2;
 	}
 	fclose(test);
@@ -63,8 +69,7 @@ int main(int argc, char **argv)
 	// Get the dimension of the given board
 	if (!getDimension(filepath, &height, &width))
 	{
-		printf("Invalid Board!\n\n");
-		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+		err_args("Invalid Board!");
 		return 3;
 	}
 
@@ -73,30 +78,26 @@ int main(int argc, char **argv)
 
 
 	// Create a 2d array of given dimensions
-	List* board[height][width];
-	List* start = NULL;
-	List* goal = NULL;
+	ListNode* board[height][width];
+	// Keeps track of the start and end nodes
+	ListNode* start = NULL;
+	ListNode* goal = NULL;
 
 	// Read the board into the array
 	readBoard(filepath, height, width, board, &start, &goal, pathing);
 	printBoard(height, width, board);
-	printf("\n\n");
-	
-	if (algorithm == 'a')
-		printf("A* Search\n\n");
-	else if (algorithm == 'd')
-		printf("Depth First Search\n\n");
-	else
-		printf("Breadth First Search\n\n");
 
 	if (findPath(height, width, board, start, goal, algorithm, pathing))
-	{
 		printf("**********Solution Found!**********\n\n");
-		printBoard(height, width, board);
-	}
 	else
-	{
 		printf("**********No Solution Found!**********\n\n");
-		printBoard(height, width, board);
-	}
+
+	printBoard(height, width, board);
+	freeBoard(height, width, board);
+}
+
+void err_args(char* extra_msg)
+{
+	printf("%s\n", extra_msg);
+	printf("Usage: pathfind [-a, -d]* [-a, -d, -b]* [struture.txt]\n");
 }

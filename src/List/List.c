@@ -1,197 +1,239 @@
 #include "List.h"
 
 /*
- * Constructor for a Node
+ * Constructor for ListNode
  * Params: int, int, char, bool
- * Return: List*
+ * Return: ListNode*
  */
-List* createNode(int row, int col, char state, bool pathing)	
+ListNode* createNode(int row, int col, char state, bool pathing)
 {
-	List* newNode = malloc(sizeof(List));	
+    ListNode* newNode = malloc(sizeof(ListNode));
+    if (!newNode)
+        return NULL;
 
-	newNode->row = row;
-	newNode->column = col;
+    newNode->row = row;
+    newNode->col = col;
+    
+    newNode->start = state == 's' ? true : false;
+    newNode->end= state == 'e' ? true : false;
+    newNode->wall= state == '#' ? true : false;
 
-	newNode->wall = state == '#' ? true : false;
-	newNode->start = state == 's' ? true : false;
-	newNode->end = state == 'e' ? true : false;
-	newNode->path = false;
+    newNode->fScore = newNode->gScore = newNode->hScore = 0;
 
-	newNode->hScore = newNode->gScore = newNode->fScore = 0;
+    newNode->path = false;
+    newNode->previous = NULL;
+    newNode->neighbors = calloc(pathing ? DIAGONAL : ACROSS, sizeof(ListNode*));
 
-	newNode->previous = NULL;
-
-	newNode->neighbors = calloc(pathing ? Diagonal : Across, sizeof(List*));
-
-	newNode->next = NULL;
-
-	return newNode;
+    newNode->next = NULL;
+    
+    return newNode;
 }
 
-/*
- * Sets the neighbors for a given Node in the Board
- * params: int, int, List*[][], List*, bool
+/* 
+ * Sets the neighbors of a given node in board
+ * Params: int, int, ListNode*[][], ListNode*, bool
  * Return: void
- */ 
-void getNeighbors(int height, int width, List* Board[height][width], List* node, bool pathing)
+ */
+void setNodeNeighbors(int height, int width, ListNode* board[height][width], ListNode* node, bool pathing)
 {
-	int index = 0;
-	if (pathing) 
-	{
-		for (int i = -1; i < 2; i++)
-		{
-			for (int j = -1; j < 2; j++)
-			{
-				if (!i && !j)
-					continue;
+    int index = 0;
+    // Pathing is set to diagonal & across
+    if (pathing)
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                if (!i && !j)
+                    continue;
 
-				int oX = node->column + i, oY = node->row + j;
-				if (oX >= 0 && oX < width && oY >= 0 && oY < height && !Board[oY][oX]->wall) 
-					node->neighbors[index++] = Board[oY][oX];
-			}
-		}
-	}
-	else
-	{
-		for (int i = -1; i < 2; i += 2)
-		{
-			if (node->row + i >= 0 && node->row + i < height && !Board[node->row + i][node->column]->wall)
-				node->neighbors[index++] = Board[node->row + i][node->column];
+                int oY = node->row + i;
+                int oX = node->col + j;
+                if (oY >= 0 && oY < height && oX >= 0 && oX < width && !board[oY][oX]->wall)
+                    node->neighbors[index++] = board[oY][oX];
+            }
+        }
+    }
+    else
+    {
+        for (int i = -1; i < 2; i += 2)
+        {
+			if (node->row + i >= 0 && node->row + i < height && !board[node->row + i][node->col]->wall)
+				node->neighbors[index++] = board[node->row + i][node->col];
 
-			if (node->column + i >= 0 && node->column + i < width && !Board[node->row][node->column + i]->wall)
-				node->neighbors[index++] = Board[node->row][node->column + i];
+			if (node->col + i >= 0 && node->col + i < width && !board[node->row][node->col + i]->wall)
+				node->neighbors[index++] = board[node->row][node->col+ i];
 		}
-	}
+    }
 }
 
-/*
+/* 
  * Appends a node to the end of the List
  * Params: List**, List*
  * Return: void
  */
-void append(List** head, List* node)
+void append(ListNode** head, ListNode* node)
 {
-	if (!*head)
-	{
-		*head = node;
-	}
-	else 
-	{
-		List* tmp = *head;
-		while (tmp->next)
-			tmp = tmp->next;
-
-		tmp->next = node;
-	}
+    if (!*head)
+    {
+        *head = node;
+    }
+    else
+    {
+        ListNode* cursor = *head;
+        while (cursor->next)
+            cursor = cursor->next;
+        
+        node->next = NULL;
+        cursor->next = node;
+    }
 }
 
 /*
- * Searches if a node exists in the list
- * Params: List*, List*
+ * Searches if node exists in the list
+ * Params: ListNode*, ListNode*
  * Return: bool
  */
-bool search(List* head, List* node)
+bool search(ListNode* head, ListNode* node)
 {
-	while (head)
-	{
-		if (head == node)
-			return true;
+    while (head)
+    {
+        if (head == node)
+            return true;
 
-		head = head->next;
-	}
-	return false;
+        head = head->next;
+    }
+    return false;
 }
 
 /*
- * Frees the allocated memory for the List
- * Params: List*
+ * Prints the List
+ * Params: ListNode*
  * Return: void
  */
-void freeList(List* head)
+void printList(ListNode* head)
 {
-	while (head)
-	{
-		List* tmp = head->next;
-		destroy(head);
-		head = tmp;
-	}
+    printf("[");
+    while (head)
+    {
+        printf("(%d, %d)", head->row, head->col);
+        head = head->next;
+        if (head)
+            printf(", ");
+    }
+    printf("]\n");
 }
 
 /*
- * Returns the current length of the list
- * Params: List*
+ * Prints the Node as a tuple of its row and col values
+ * Params: ListNode*
+ * Return: void
+ */
+void printNode(ListNode* node)
+{
+    if (!node)
+        printf("%p\n", node);
+    else
+        printf("(%d, %d)\n", node->row, node->col);
+}
+
+/*
+ * Frees the memory allocated for the list
+ * Params: ListNode*
+ * Return: void
+ */
+void freeList(ListNode* head)
+{
+    ListNode* tmp;
+    while (head)
+    {
+        tmp = head->next;
+        destroy(head);
+        head = tmp;
+    }
+}
+
+/*
+ * Returns the length of the List
+ * Params: ListNode*
  * Return: int
  */
-int listLength(List* head)
+int getListLength(ListNode* head)
 {
-	int counter = 0;
-
-	while (head)
-	{
-		head = head->next;
-		counter++;
-	}	
-	return counter;
+    int length = 0;
+    while (head)
+    {
+        head = head->next;
+        length++;
+    }
+    return length;
 }
 
 /*
- * Removes the (index)th Node from the list
- * Params: List**, int
- * Return: List*
+ * Removes the (index)th node from the List
+ * Params: ListNode**, int
+ * Return: ListNode*
  */
-List* removeNode(List** head, int index)
+ListNode* removeListNode(ListNode** head, int index)
 {
-	List* cursor = *head;
-	if (index < 0 || index >= listLength(*head))
-		return NULL;
-	
-	if (!index)
-	{
-		*head = cursor->next;
-	}
-	else
-	{
-		while (1)
-		{
-			List* tmp = cursor;
-			cursor = cursor->next;
-			if (!--index)
-			{
-				tmp->next = cursor->next;
-				break;
-			}
-		}
-	}
+    if (!*head)
+        return NULL;
+  
+   // Store head node 
+   ListNode* tmp = *head;
+  
+    if (index == 0)
+    {
+        *head = tmp->next;
+        return tmp;
+    }
+  
+    // Find previous node of the node to be deleted 
+    for (int i = 0; tmp != NULL && i < index - 1; i++) 
+        tmp = tmp->next; 
+  
+    // If position is more than number of nodes 
+    if (tmp == NULL || tmp->next == NULL) 
+         return NULL; 
+  
+    // Node temp->next is the node to be removed
+    // Store pointer to the next of node to be deleted 
+    ListNode* next = tmp->next->next; 
+    ListNode* nodeToBeRemoved = tmp->next;
+    // Unlink the deleted node from list
+    tmp->next = next; 
 
-	return cursor;
+    return nodeToBeRemoved;
+}
+
+/* 
+ * Pops the last Node of the List
+ * Params: ListNode**
+ * Return: ListNode*
+ */
+ListNode* pop(ListNode** head)
+{
+    return removeListNode(head, getListLength(*head) - 1);
 }
 
 /*
- * Pops the Last Node of the List
- * Params: List**
- * Return: List*
+ * Dequeues the first Node of the List
+ * Params: ListNode**
+ * Return: ListNode*
  */
-List *pop(List **head)
+ListNode* dequeue(ListNode** head)
 {
-	return removeNode(head, listLength(*head) - 1);
-}
-
-/*
- * Dequeues the First Node of the List
- * Params: List**
- * Return: List*
- */
-List *dequeue(List **head)
-{
-	return removeNode(head, 0);
+    return removeListNode(head, 0);
 }
 
 /*
  * Wrapper for free()
- * Params: List*
+ * Params: ListNode*
  * Return: void
  */
-void destroy(List *node)
+void destroy(ListNode* node)
 {
-	free(node);
+    free(node->neighbors);
+    free(node);
 }
+
