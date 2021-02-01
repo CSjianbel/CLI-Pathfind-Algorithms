@@ -1,55 +1,51 @@
+#ifndef LIST_H
+#define LIST_H
+
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
+#include <stdio.h>
 
-#define Across 4
-#define Diagonal 8
+#define ACROSS 5
+#define DIAGONAL 9
 
-typedef struct Node
+typedef struct ListNode
 {
-	
-	int row;
-	int column;
+    int row;
+    int col;
 
-	bool wall;
-	bool start;
-	bool end;
+    bool start;
+    bool end;
+    bool wall;
 
-	bool path;
+    bool path;
 
-	double hScore;
-	double gScore;
-	double fScore;
+    double fScore;
+    double gScore;
+    double hScore;
 
-	struct Node *previous;
-	struct Node **neighbors;
-
+    struct ListNode* previous;
+    struct ListNode** neighbors;
+    struct ListNode* next;
 }
-Node;
+ListNode;
 
-typedef struct List
-{
-
-	Node *node;
-	struct List *next;
-
-}
-List;
-
-// Node Constructor
-Node *createNode(int row, int col, char state, bool pathing);
-// Sets the neighboring Nodes of a given Node
-void getNeighbors(int height, int width, Node *Board[height][width], Node *node, bool pathing);
+// ListNode Constructor
+ListNode* createNode(int row, int col, char state, bool pathing);
+void setNodeNeighbors(int height, int width, ListNode* board[height][width], ListNode* node, bool pathing);
 
 /*
  * List Methods:
- *		Append, Search, Remove, Free list
+ *		Append, Search, Remove, Free list, Print 
  */
-void append(List **head, Node *node);
-bool search(List *head, Node *node);
-void freeList(List *head);
-int listLength(List *head);
-List *removeNode(List **head, int index);
-List *pop(List **head);
-List *dequeue(List **head);
-void destroy(List *node);
+void append(ListNode** head, ListNode* node);
+bool search(ListNode* head, ListNode* node);
+void freeList(ListNode* head);
+void printList(ListNode* head);
+void printNode(ListNode* node);
+int getListLength(ListNode* head);
+ListNode* removeListNode(ListNode** head, int index);
+ListNode* pop(ListNode** head);
+ListNode* dequeue(ListNode** head);
+void destroy(ListNode*node);
+
+#endif
