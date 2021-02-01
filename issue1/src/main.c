@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <string.h>
+
 #include "pathfind.h"
+#include "board.h"
 
 int main(int argc, char **argv)
 {
@@ -55,6 +58,7 @@ int main(int argc, char **argv)
 	{	
 		printf("Invalid structure filepath!\n\n");
 		printf("Usage: pathfind [-a, -d] [-a, -d, -b] [struture.txt]\n");
+		fclose(test);
 		return 2;
 	}
 	fclose(test);
@@ -82,25 +86,12 @@ int main(int argc, char **argv)
 	readBoard(filepath, height, width, board, &start, &goal, pathing);
 	printBoard(height, width, board);
 	printf("\n\n");
-	
-	if (algorithm == 'a')
-		printf("A* Search\n\n");
-	else if (algorithm == 'd')
-		printf("Depth First Search\n\n");
-	else
-		printf("Breadth First Search\n\n");
 
 	if (findPath(height, width, board, start, goal, algorithm, pathing))
-	{
 		printf("**********Solution Found!**********\n\n");
-		printBoard(height, width, board);
-	}
 	else
-	{
 		printf("**********No Solution Found!**********\n\n");
-		printBoard(height, width, board);
-	}
 
+	printBoard(height, width, board);
 	freeBoard(height, width, board);
-	printf("Board Successfully Free'd!\n");
 }

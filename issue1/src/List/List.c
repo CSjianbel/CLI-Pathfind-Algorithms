@@ -22,7 +22,7 @@ ListNode* createNode(int row, int col, char state, bool pathing)
 
     newNode->path = false;
     newNode->previous = NULL;
-    newNode->neighbors = calloc(pathing ? DIAGONAL : ACROSS, sizeof(ListNode));
+    newNode->neighbors = calloc(pathing ? DIAGONAL : ACROSS, sizeof(ListNode*));
 
     newNode->next = NULL;
     
@@ -34,7 +34,7 @@ ListNode* createNode(int row, int col, char state, bool pathing)
  * Params: int, int, ListNode*[][], ListNode*, bool
  * Return: void
  */
-void getNeighbors(int height, int width, ListNode* board[height][width], ListNode* node, bool pathing)
+void setNodeNeighbors(int height, int width, ListNode* board[height][width], ListNode* node, bool pathing)
 {
     int index = 0;
     // Pathing is set to diagonal & across
@@ -44,26 +44,26 @@ void getNeighbors(int height, int width, ListNode* board[height][width], ListNod
         {
             for (int j = -1; j <= 1; j++)
             {
+                if (!i && !j)
+                    continue;
+
                 int oY = node->row + i;
                 int oX = node->col + j;
-                if (oY >= 0 && oY < height && oX >= 0 && oX < height && node != board[node->row][node->col] && !board[oY][oX]->wall)
+                if (oY >= 0 && oY < height && oX >= 0 && oX < width && !board[oY][oX]->wall)
                     node->neighbors[index++] = board[oY][oX];
             }
         }
     }
     else
     {
-        if (node->row - 1 >= 0 && !board[node->row - 1][node->col]->wall)
-            node->neighbors[index++] = board[node->row - 1][node->col];
-        
-        if (node->row + 1 > height && !board[node->row + 1][node->col]->wall)
-            node->neighbors[index++] = board[node->row + 1][node->col];
+        for (int i = -1; i < 2; i += 2)
+        {
+			if (node->row + i >= 0 && node->row + i < height && !board[node->row + i][node->col]->wall)
+				node->neighbors[index++] = board[node->row + i][node->col];
 
-        if (node->col - 1 >= 0 && !board[node->row][node->col - 1]->wall)
-            node->neighbors[index++] = board[node->row][node->col - 1];
-
-        if (node->col + 1 >= 0 && !board[node->row][node->col + 1]->wall)
-            node->neighbors[index++] = board[node->row][node->col + 1];
+			if (node->col + i >= 0 && node->col + i < width && !board[node->row][node->col + i]->wall)
+				node->neighbors[index++] = board[node->row][node->col+ i];
+		}
     }
 }
 
@@ -84,6 +84,7 @@ void append(ListNode** head, ListNode* node)
         while (cursor->next)
             cursor = cursor->next;
         
+        node->next = NULL;
         cursor->next = node;
     }
 }
@@ -106,6 +107,37 @@ bool search(ListNode* head, ListNode* node)
 }
 
 /*
+ * Prints the List
+ * Params: ListNode*
+ * Return: void
+ */
+void printList(ListNode* head)
+{
+    printf("[");
+    while (head)
+    {
+        printf("(%d, %d)", head->row, head->col);
+        head = head->next;
+        if (head)
+            printf(", ");
+    }
+    printf("]\n");
+}
+
+/*
+ * Prints the Node as a tuple of its row and col values
+ * Params: ListNode*
+ * Return: void
+ */
+void printNode(ListNode* node)
+{
+    if (!node)
+        printf("%p\n", node);
+    else
+        printf("(%d, %d)\n", node->row, node->col);
+}
+
+/*
  * Frees the memory allocated for the list
  * Params: ListNode*
  * Return: void
@@ -116,7 +148,7 @@ void freeList(ListNode* head)
     while (head)
     {
         tmp = head->next;
-        free(head);
+        destroy(head);
         head = tmp;
     }
 }
@@ -168,7 +200,8 @@ ListNode* removeListNode(ListNode** head, int index)
     // Store pointer to the next of node to be deleted 
     ListNode* next = tmp->next->next; 
     ListNode* nodeToBeRemoved = tmp->next;
-    tmp->next = next;  // Unlink the deleted node from list
+    // Unlink the deleted node from list
+    tmp->next = next; 
 
     return nodeToBeRemoved;
 }
@@ -203,3 +236,4 @@ void destroy(ListNode* node)
     free(node->neighbors);
     free(node);
 }
+

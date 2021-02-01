@@ -1,4 +1,4 @@
-#include "pathfind.h"
+#include "board.h"
 
 /*
  * Verifies if Board.txt is a valid board 
@@ -53,7 +53,10 @@ bool getDimension(char* path, int* height, int* width)
 
 	// Read the first line of the board
 	if (fscanf(infile, "%s", row) == EOF)
+	{
+		fclose(infile);
 		return false;
+	}
 
 	*width = strlen(row);
 	*height = 1;	
@@ -106,6 +109,18 @@ void readBoard(char* path, int height, int width, ListNode* board[height][width]
 	}
 
 	fclose(infile);
+}
+
+/* 
+ * Sets neighbors of the nodes in the board
+ * Params: int, int, ListNode*
+ * Return: void
+ */
+void setNeighbors(int height, int width, ListNode* board[height][width], bool pathing)
+{
+	for (int i = 0; i < height; i++)
+		for (int j = 0; j < width; j++)
+			setNodeNeighbors(height, width, board, board[i][j], pathing);
 }
 
 /*

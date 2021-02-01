@@ -1,4 +1,5 @@
 #include "pathfind.h"
+#include "board.h"
 
 /*
  * Returns the index of the node with the lowest Fscore 
@@ -49,6 +50,7 @@ double heuristic(ListNode* start, ListNode* goal)
  */
 bool Astar(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
 {
+    printf("A* Search\n\n");
     ListNode* openset = NULL;
     ListNode* closedset = NULL;
 
@@ -64,12 +66,10 @@ bool Astar(int height, int width, ListNode* board[height][width], ListNode* star
         // Solution has been found
         if (current == goal)
         {
-			printf("Path found!\n\n");
             ListNode* tmp = current;
             while (tmp->previous)
             {
                 tmp->path = true;
-				printf("%d - %d", tmp->row, tmp->col);
                 tmp = tmp->previous;
             }
 
@@ -77,8 +77,9 @@ bool Astar(int height, int width, ListNode* board[height][width], ListNode* star
         }
 
         // Append current to closedset
-        append(&closedset, current);
-
+        if (!search(closedset, current))
+            append(&closedset, current);
+        
         for (int i = 0; current->neighbors[i]; i++)
         {
             ListNode* neighbor = current->neighbors[i];
@@ -90,7 +91,6 @@ bool Astar(int height, int width, ListNode* board[height][width], ListNode* star
             double tGscore = neighbor->gScore + heuristic(current, neighbor);
             
             bool newPathFound = false;
-
             if (search(openset, neighbor))
             {
                 if (tGscore < neighbor->gScore)
@@ -117,8 +117,39 @@ bool Astar(int height, int width, ListNode* board[height][width], ListNode* star
     return false;
 }
 
+/*
+ * Depth-First Search Algorithm
+ * Params: int, int, ListNode*[][], ListNode*, ListNode
+ * Return: bool
+ */
+bool depthFirstSearch(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
+{
+    printf("Depth First Search\n\n");
+    return false;
+}
+
+/*
+ * Breath-First Search Algorithm
+ * Params: int, int, ListNode*[][], ListNode*, ListNode
+ * Return: bool
+ */
+bool breathFirstSearch(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
+{
+    printf("Breadth First Search\n\n");
+    return false;
+}
+
+void setup(int height, int width, ListNode* board[height][width], bool pathing)
+{
+    setNeighbors(height, width, board, pathing);
+    Algorithms[tolower(Star)] = Astar;
+    Algorithms[tolower(DFS)] = depthFirstSearch;
+    Algorithms[tolower(BFS)] = breathFirstSearch;
+}
+
 
 bool findPath(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal, char algorithm, bool pathing)
 {
-	return Astar(height, width, board, start, goal);
+    setup(height, width,board, pathing);
+    return Algorithms[tolower(algorithm)](height, width, board, start, goal);
 }
