@@ -1,7 +1,8 @@
 #ifndef PATHFIND_H
 #define PATHFIND_H
 
-#include "List/List.h"
+#include "../List/List.h"
+#include "../Board/board.h"
 
 #include <stdio.h>
 #include <stdbool.h>

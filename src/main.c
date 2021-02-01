@@ -1,65 +1,26 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "pathfind.h"
-#include "board.h"
+#include "./Pathfind/pathfind.h"
+#include "./Board/board.h"
 
+void verifyArgs(int argc, char **argv, bool* pathing, char* algorithm, char** filepath);
 void err_args(char* extra_msg);
 
 int main(int argc, char **argv)
 {
-	if (argc < 2 || argc > 4)
-	{
-		err_args("");
-		return 1;
-	}
-	
 	bool pathing = true;
 	char algorithm = 'a';
 	char* filepath = argv[1];
 
-	if (argc == 4)
-	{
-		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
-		{	
-			err_args("");
-			return 1;
-		}
+	// Verify Command line args
+	verifyArgs(argc, argv, &pathing, &algorithm, &filepath);
 
-		pathing = !strcmp("-d", argv[1]) ? true : false;
-
-		if (strcmp(argv[2], "-a") && strcmp(argv[2], "-d") && strcmp(argv[2], "-b"))
-		{
-			err_args("");
-			return 1;
-		}
-
-		if (!strcmp(argv[2], "-a"))
-			algorithm = 'a';
-		else if (!strcmp(argv[2], "-d"))
-			algorithm = 'd';
-		else if (!strcmp(argv[2], "-b"))
-			algorithm = 'b';
-
-		filepath = argv[3];
-	} 
-	else if (argc == 3)
-	{
-		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
-		{	
-			err_args("");
-			return 1;
-		}
-
-		pathing = !strcmp("-d", argv[1]) ? true : false;
-		filepath = argv[2];
-	}
-
+	// Verify Structure File
 	FILE *test = fopen(filepath, "r");
 	if (!test)
 	{	
 		err_args("Invalid structure filepath!");
-		fclose(test);
 		return 2;
 	}
 	fclose(test);
@@ -96,6 +57,62 @@ int main(int argc, char **argv)
 	freeBoard(height, width, board);
 }
 
+/*
+ * Verifies Command Line Arguments and sets variables in main
+ * Params: int, char**, bool*, char*, char**
+ * Return: void
+ */
+void verifyArgs(int argc, char** argv, bool* pathing, char* algorithm, char** filepath)
+{
+	if (argc < 2 || argc > 4)
+	{
+		err_args("");
+		return 1;
+	}
+	
+	if (argc == 4)
+	{
+		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
+		{	
+			err_args("");
+			exit(1);
+		}
+
+		*pathing = !strcmp("-d", argv[1]) ? true : false;
+
+		if (strcmp(argv[2], "-a") && strcmp(argv[2], "-d") && strcmp(argv[2], "-b"))
+		{
+			err_args("");
+			exit(1);
+		}
+
+		if (!strcmp(argv[2], "-a"))
+			*algorithm = 'a';
+		else if (!strcmp(argv[2], "-d"))
+			*algorithm = 'd';
+		else if (!strcmp(argv[2], "-b"))
+			*algorithm = 'b';
+
+		*filepath = argv[3];
+	} 
+	else if (argc == 3)
+	{
+		if (strcmp("-d", argv[1]) && strcmp("-a", argv[1]))
+		{	
+			err_args("");
+			exit(1);
+		}
+
+		*pathing = !strcmp("-d", argv[1]) ? true : false;
+		*filepath = argv[2];
+	}
+}
+
+/*
+ * Prints out an error message for command line arguments errors
+ * Params: char*
+ * Return: void
+ */
 void err_args(char* extra_msg)
 {
 	printf("%s\n", extra_msg);

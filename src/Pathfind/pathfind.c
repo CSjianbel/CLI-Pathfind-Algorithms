@@ -1,5 +1,4 @@
 #include "pathfind.h"
-#include "board.h"
 
 /*
  * Returns the index of the node with the lowest Fscore 

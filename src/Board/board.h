@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "List/List.h"
+#include "../List/List.h"
 
 #include <stdio.h>
 #include <string.h>
