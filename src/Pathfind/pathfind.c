@@ -165,13 +165,13 @@ bool depthFirstSearch(int height, int width, ListNode* board[height][width], Lis
 }
 
 /*
- * Breath-First Search Algorithm
+ * Breadth-First Search Algorithm
  * Params: int, int, ListNode*[][], ListNode*, ListNode
  * Return: bool
  */
-bool breathFirstSearch(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
+bool breadthFirstSearch(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal)
 {
-    printf("Breath First Search\n\n");
+    printf("Breadth First Search\n\n");
     ListNode* queue = NULL;
     ListNode* explored = NULL;
 
@@ -218,7 +218,7 @@ void setup(int height, int width, ListNode* board[height][width], bool pathing)
     setNeighbors(height, width, board, pathing);
     Algorithms[tolower(Star)] = Astar;
     Algorithms[tolower(DFS)] = depthFirstSearch;
-    Algorithms[tolower(BFS)] = breathFirstSearch;
+    Algorithms[tolower(BFS)] = breadthFirstSearch;
 }
 
 
