@@ -216,14 +216,14 @@ bool breadthFirstSearch(int height, int width, ListNode* board[height][width], L
 void setup(int height, int width, ListNode* board[height][width], bool pathing)
 {
     setNeighbors(height, width, board, pathing);
-    Algorithms[tolower(Star)] = Astar;
-    Algorithms[tolower(DFS)] = depthFirstSearch;
-    Algorithms[tolower(BFS)] = breadthFirstSearch;
+    Algorithms[tolower(Star) - 'a'] = Astar;
+    Algorithms[tolower(DFS) - 'a'] = depthFirstSearch;
+    Algorithms[tolower(BFS) - 'a'] = breadthFirstSearch;
 }
 
 
 bool findPath(int height, int width, ListNode* board[height][width], ListNode* start, ListNode* goal, char algorithm, bool pathing)
 {
     setup(height, width,board, pathing);
-    return Algorithms[tolower(algorithm)](height, width, board, start, goal);
+    return Algorithms[tolower(algorithm) - 'a'](height, width, board, start, goal);
 }
